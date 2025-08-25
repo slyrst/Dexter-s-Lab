@@ -151,6 +151,70 @@
             text-align: center;
         }
 
+        .inventory-container {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #8b0000;
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 1000;
+            width: 300px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .inventory-title {
+            color: #ff4444;
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(255, 68, 68, 0.7);
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .inventory-slot {
+            width: 60px;
+            height: 60px;
+            background: rgba(139, 0, 0, 0.3);
+            border: 2px solid #8b0000;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .inventory-slot:hover {
+            border-color: #ff4444;
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
+        }
+
+        .inventory-slot.has-item {
+            background: rgba(255, 68, 68, 0.4);
+            border-color: #ff4444;
+        }
+
+        .inventory-item-icon {
+            font-size: 1.5rem;
+            margin-bottom: 2px;
+        }
+
+        .inventory-item-count {
+            font-size: 0.7rem;
+            color: #ffff00;
+            font-weight: bold;
+        }
+
         .game-layout {
             display: grid;
             grid-template-columns: 320px 1fr 320px;
@@ -168,6 +232,44 @@
             border: 3px solid #8b0000;
             max-height: calc(100vh - 50px);
             overflow-y: auto;
+        }
+
+        .shop-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .shop-tab {
+            flex: 1;
+            padding: 10px;
+            background: rgba(139, 0, 0, 0.3);
+            border: 2px solid #8b0000;
+            border-radius: 8px;
+            color: #cccccc;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .shop-tab.active {
+            background: rgba(255, 68, 68, 0.4);
+            border-color: #ff4444;
+            color: #ff4444;
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
+        }
+
+        .shop-tab:hover {
+            border-color: #ff0000;
+        }
+
+        .shop-content {
+            display: none;
+        }
+
+        .shop-content.active {
+            display: block;
         }
 
         .shop-title {
@@ -450,6 +552,57 @@
             font-size: 0.9rem;
         }
 
+        .item {
+            background: rgba(139, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            border: 3px solid #8b0000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .item:hover {
+            border-color: #ff0000;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 0, 0, 0.6);
+            background: rgba(139, 0, 0, 0.5);
+        }
+
+        .item.affordable {
+            border-color: #ff4444;
+            background: rgba(255, 68, 68, 0.4);
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.4);
+        }
+
+        .item.unaffordable {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .item-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #ff4444;
+            text-shadow: 0 0 10px rgba(255, 68, 68, 0.7);
+        }
+
+        .item-description {
+            color: #cccccc;
+            font-size: 0.8rem;
+            margin: 5px 0;
+            font-style: italic;
+        }
+
+        .item-cost {
+            color: #ffaa44;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(255, 170, 68, 0.7);
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
         .achievement {
             background: linear-gradient(45deg, #8b0000, #ff0000, #8b0000);
             padding: 12px;
@@ -680,34 +833,83 @@
         }
 
         .boss-action-btn {
-            padding: 10px 18px;
+            padding: 12px 20px;
             background: linear-gradient(45deg, #8b0000, #ff0000);
             border: 3px solid #ff4444;
             border-radius: 8px;
             color: white;
             font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
+            font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
             font-weight: bold;
+            position: relative;
+            overflow: hidden;
         }
 
         .boss-action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 0, 0, 0.7);
+        }
+
+        .boss-action-btn:active {
+            transform: scale(0.95);
+            animation: buttonStab 0.3s ease;
+        }
+
+        @keyframes buttonStab {
+            0% { transform: scale(0.95); }
+            50% { transform: scale(1.1) rotate(5deg); }
+            100% { transform: scale(0.95); }
         }
 
         .boss-dialogue {
             background: rgba(0, 0, 0, 0.8);
             border: 3px solid #8b0000;
             border-radius: 10px;
-            padding: 12px;
-            margin: 12px 0;
-            max-width: 400px;
+            padding: 15px;
+            margin: 15px 0;
+            max-width: 500px;
             text-align: center;
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: #ff4444;
+            animation: dialoguePulse 2s ease infinite;
+        }
+
+        @keyframes dialoguePulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 68, 68, 0.5); }
+            50% { box-shadow: 0 0 35px rgba(255, 68, 68, 0.8); }
+        }
+
+        .boss-special-effects {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        .boss-spark {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #ffff00;
+            border-radius: 50%;
+            animation: sparkFly 2s ease-out forwards;
+        }
+
+        @keyframes sparkFly {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.2) translateX(200px) translateY(-100px);
+            }
         }
 
         .critical-number {
@@ -877,6 +1079,13 @@
         <div class="health-text" id="healthText">Health: 100/100</div>
     </div>
 
+    <div class="inventory-container">
+        <div class="inventory-title">🎒 INVENTORY</div>
+        <div class="inventory-grid" id="inventoryGrid"></div>
+    </div>
+
+    <div class="boss-special-effects" id="bossEffects"></div>
+
     <div class="boss-arena" id="bossArena">
         <div class="boss-container">
             <div class="character-sprite dexter-sprite" id="dexterSprite"></div>
@@ -896,6 +1105,7 @@
             <button class="boss-action-btn" onclick="bossAttack('slice')">🗡️ PRECISE SLICE</button>
             <button class="boss-action-btn" onclick="bossAttack('follow')">👁️ TRACK & FOLLOW</button>
             <button class="boss-action-btn" onclick="bossAttack('analyze')">🧬 ANALYZE WEAKNESS</button>
+            <button class="boss-action-btn" onclick="bossAttack('ultimate')">💀 ULTIMATE KILL</button>
             <button class="boss-action-btn" onclick="escapeBoss()">🏃 TACTICAL RETREAT</button>
         </div>
     </div>
@@ -903,215 +1113,178 @@
     <div class="game-layout">
         <div class="shop-container">
             <div class="shop-title">🛒 SLY'S SHOP 🛒</div>
-            <div class="upgrades">
-                <div class="upgrade" id="upgrade1">
-                    <div class="upgrade-name">🔪 Razor's Edge</div>
-                    <div class="upgrade-description">Sharper than a serpent's fang</div>
-                    <div>+1 kill per click</div>
-                    <div class="upgrade-cost">Cost: <span id="cost1">10</span> victims</div>
-                </div>
-                
-                <div class="upgrade" id="upgrade2">
-                    <div class="upgrade-name">🗡️ Blood Harvester</div>
-                    <div class="upgrade-description">Reaps souls with surgical precision</div>
-                    <div>+5 kills per click</div>
-                    <div class="upgrade-cost">Cost: <span id="cost2">100</span> victims</div>
-                </div>
-                
-                <div class="upgrade" id="upgrade3">
-                    <div class="upgrade-name">💀 Soul Magnet</div>
-                    <div class="upgrade-description">Attracts death automatically</div>
-                    <div>+1 kill per second</div>
-                    <div class="upgrade-cost">Cost: <span id="cost3">50</span> victims</div>
-                </div>
-                
-                <div class="upgrade" id="upgrade4">
-                    <div class="upgrade-name">🏢 Death Factory</div>
-                    <div class="upgrade-description">Mass production of demise</div>
-                    <div>+10 kills per second</div>
-                    <div class="upgrade-cost">Cost: <span id="cost4">500</span> victims</div>
-                </div>
-                
-                <div class="upgrade" id="upgrade5">
-                    <div class="upgrade-name">⚡ Lightning Execution</div>
-                    <div class="upgrade-description">Strike faster than thought</div>
-                    <div>+25 kills per click</div>
-                    <div class="upgrade-cost">Cost: <span id="cost5">2000</span> victims</div>
-                </div>
-                
-                <div class="upgrade" id="upgrade6">
-                    <div class="upgrade-name">🌃 Night Reaper</div>
-                    <div class="upgrade-description">Death walks in eternal darkness</div>
-                    <div>+50 kills per second</div>
-                    <div class="upgrade-cost">Cost: <span id="cost6">5000</span> victims</div>
-                </div>
+            
+            <div class="shop-tabs">
+                <div class="shop-tab active" onclick="switchTab('upgrades')">⚡ UPGRADES</div>
+                <div class="shop-tab" onclick="switchTab('items')">🔪 ITEMS</div>
+            </div>
 
-                <div class="upgrade" id="upgrade7">
-                    <div class="upgrade-name">🧬 DNA Destroyer</div>
-                    <div class="upgrade-description">Unravels life at its core</div>
-                    <div>+100 kills per click</div>
-                    <div class="upgrade-cost">Cost: <span id="cost7">10000</span> victims</div>
-                </div>
+            <div class="shop-content active" id="upgrades-content">
+                <div class="upgrades">
+                    <div class="upgrade" id="upgrade1">
+                        <div class="upgrade-name">🔪 Razor's Edge</div>
+                        <div class="upgrade-description">Sharper than a serpent's fang</div>
+                        <div>+1 kill per click</div>
+                        <div class="upgrade-cost">Cost: <span id="cost1">10</span> victims</div>
+                    </div>
+                    
+                    <div class="upgrade" id="upgrade2">
+                        <div class="upgrade-name">🗡️ Blood Harvester</div>
+                        <div class="upgrade-description">Reaps souls with surgical precision</div>
+                        <div>+5 kills per click</div>
+                        <div class="upgrade-cost">Cost: <span id="cost2">100</span> victims</div>
+                    </div>
+                    
+                    <div class="upgrade" id="upgrade3">
+                        <div class="upgrade-name">💀 Soul Magnet</div>
+                        <div class="upgrade-description">Attracts death automatically</div>
+                        <div>+1 kill per second</div>
+                        <div class="upgrade-cost">Cost: <span id="cost3">50</span> victims</div>
+                    </div>
+                    
+                    <div class="upgrade" id="upgrade4">
+                        <div class="upgrade-name">🏢 Death Factory</div>
+                        <div class="upgrade-description">Mass production of demise</div>
+                        <div>+10 kills per second</div>
+                        <div class="upgrade-cost">Cost: <span id="cost4">500</span> victims</div>
+                    </div>
+                    
+                    <div class="upgrade" id="upgrade5">
+                        <div class="upgrade-name">⚡ Lightning Execution</div>
+                        <div class="upgrade-description">Strike faster than thought</div>
+                        <div>+25 kills per click</div>
+                        <div class="upgrade-cost">Cost: <span id="cost5">2000</span> victims</div>
+                    </div>
+                    
+                    <div class="upgrade" id="upgrade6">
+                        <div class="upgrade-name">🌃 Night Reaper</div>
+                        <div class="upgrade-description">Death walks in eternal darkness</div>
+                        <div>+50 kills per second</div>
+                        <div class="upgrade-cost">Cost: <span id="cost6">5000</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade8">
-                    <div class="upgrade-name">🚢 Crimson Harbor</div>
-                    <div class="upgrade-description">Where bodies find eternal rest</div>
-                    <div>+200 kills per second</div>
-                    <div class="upgrade-cost">Cost: <span id="cost8">25000</span> victims</div>
-                </div>
+                    <div class="upgrade" id="upgrade7">
+                        <div class="upgrade-name">🧬 DNA Destroyer</div>
+                        <div class="upgrade-description">Unravels life at its core</div>
+                        <div>+100 kills per click</div>
+                        <div class="upgrade-cost">Cost: <span id="cost7">10000</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade9">
-                    <div class="upgrade-name">👥 Trinity Protocol</div>
-                    <div class="upgrade-description">Master the art of three</div>
-                    <div>+500 kills per click</div>
-                    <div class="upgrade-cost">Cost: <span id="cost9">50000</span> victims</div>
-                </div>
+                    <div class="upgrade" id="upgrade8">
+                        <div class="upgrade-name">🚢 Crimson Harbor</div>
+                        <div class="upgrade-description">Where bodies find eternal rest</div>
+                        <div>+200 kills per second</div>
+                        <div class="upgrade-cost">Cost: <span id="cost8">25000</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade10">
-                    <div class="upgrade-name">🩸 Blood Archive</div>
-                    <div class="upgrade-description">Memories preserved in crimson</div>
-                    <div>+1000 kills per second</div>
-                    <div class="upgrade-cost">Cost: <span id="cost10">100000</span> victims</div>
-                </div>
+                    <div class="upgrade" id="upgrade9">
+                        <div class="upgrade-name">👥 Trinity Protocol</div>
+                        <div class="upgrade-description">Master the art of three</div>
+                        <div>+500 kills per click</div>
+                        <div class="upgrade-cost">Cost: <span id="cost9">50000</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade11">
-                    <div class="upgrade-name">🌊 Tidal Massacre</div>
-                    <div class="upgrade-description">Waves of endless destruction</div>
-                    <div>+2500 kills per click</div>
-                    <div class="upgrade-cost">Cost: <span id="cost11">250000</span> victims</div>
-                </div>
+                    <div class="upgrade" id="upgrade10">
+                        <div class="upgrade-name">🩸 Blood Archive</div>
+                        <div class="upgrade-description">Memories preserved in crimson</div>
+                        <div>+1000 kills per second</div>
+                        <div class="upgrade-cost">Cost: <span id="cost10">100000</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade12">
-                    <div class="upgrade-name">🎭 Code Eternal</div>
-                    <div class="upgrade-description">Harry's legacy lives forever</div>
-                    <div>+5000 kills per second</div>
-                    <div class="upgrade-cost">Cost: <span id="cost12">500000</span> victims</div>
-                </div>
+                    <div class="upgrade" id="upgrade11">
+                        <div class="upgrade-name">🌊 Tidal Massacre</div>
+                        <div class="upgrade-description">Waves of endless destruction</div>
+                        <div>+2500 kills per click</div>
+                        <div class="upgrade-cost">Cost: <span id="cost11">250000</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade13">
-                    <div class="upgrade-name">🏥 Metro Morgue</div>
-                    <div class="upgrade-description">Inside access to infinite victims</div>
-                    <div>+10000 kills per click</div>
-                    <div class="upgrade-cost">Cost: <span id="cost13">1000000</span> victims</div>
-                </div>
+                    <div class="upgrade" id="upgrade12">
+                        <div class="upgrade-name">🎭 Code Eternal</div>
+                        <div class="upgrade-description">Harry's legacy lives forever</div>
+                        <div>+5000 kills per second</div>
+                        <div class="upgrade-cost">Cost: <span id="cost12">500000</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade14">
-                    <div class="upgrade-name">🔥 Infernal Judge</div>
-                    <div class="upgrade-description">Divine judgment through flames</div>
-                    <div>+25000 kills per second</div>
-                    <div class="upgrade-cost">Cost: <span id="cost14">2500000</span> victims</div>
-                </div>
+                    <div class="upgrade" id="upgrade13">
+                        <div class="upgrade-name">🏥 Metro Morgue</div>
+                        <div class="upgrade-description">Inside access to infinite victims</div>
+                        <div>+10000 kills per click</div>
+                        <div class="upgrade-cost">Cost: <span id="cost13">1000000</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade15">
-                    <div class="upgrade-name">👁️ Omniscient Watcher</div>
-                    <div class="upgrade-description">See all, judge all, end all</div>
-                    <div>+50000 kills per click</div>
-                    <div class="upgrade-cost">Cost: <span id="cost15">5000000</span> victims</div>
-                </div>
+                    <div class="upgrade" id="upgrade14">
+                        <div class="upgrade-name">🔥 Infernal Judge</div>
+                        <div class="upgrade-description">Divine judgment through flames</div>
+                        <div>+25000 kills per second</div>
+                        <div class="upgrade-cost">Cost: <span id="cost14">2500000</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade16">
-                    <div class="upgrade-name">🌪️ Chaos Incarnate</div>
-                    <div class="upgrade-description">Pure destruction unleashed</div>
-                    <div>+100000 kills per second</div>
-                    <div class="upgrade-cost">Cost: <span id="cost16">10000000</span> victims</div>
+                    <div class="upgrade" id="upgrade15">
+                        <div class="upgrade-name">👁️ Omniscient Watcher</div>
+                        <div class="upgrade-description">See all, judge all, end all</div>
+                        <div>+50000 kills per click</div>
+                        <div class="upgrade-cost">Cost: <span id="cost15">5000000</span> victims</div>
+                    </div>
                 </div>
+            </div>
 
-                <div class="upgrade" id="upgrade17">
-                    <div class="upgrade-name">🌋 Volcanic Wrath</div>
-                    <div class="upgrade-description">Earth's fury in your hands</div>
-                    <div>+250000 kills per click</div>
-                    <div class="upgrade-cost">Cost: <span id="cost17">25000000</span> victims</div>
-                </div>
+            <div class="shop-content" id="items-content">
+                <div class="items">
+                    <div class="item" id="item1">
+                        <div class="item-name">🩹 Medical Bandage</div>
+                        <div class="item-description">Heals wounds instantly</div>
+                        <div>+25 Health when used</div>
+                        <div class="item-cost">Cost: <span id="itemCost1">50</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade18">
-                    <div class="upgrade-name">🌌 Cosmic Annihilator</div>
-                    <div class="upgrade-description">Death that transcends dimensions</div>
-                    <div>+500000 kills per second</div>
-                    <div class="upgrade-cost">Cost: <span id="cost18">50000000</span> victims</div>
-                </div>
+                    <div class="item" id="item2">
+                        <div class="item-name">🔪 Steel Knife</div>
+                        <div class="item-description">Sharp blade for precise cuts</div>
+                        <div>+5 Click Power permanently</div>
+                        <div class="item-cost">Cost: <span id="itemCost2">200</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade19">
-                    <div class="upgrade-name">⚫ Void Devourer</div>
-                    <div class="upgrade-description">Consume reality itself</div>
-                    <div>+1000000 kills per click</div>
-                    <div class="upgrade-cost">Cost: <span id="cost19">100000000</span> victims</div>
-                </div>
+                    <div class="item" id="item3">
+                        <div class="item-name">🗡️ Combat Blade</div>
+                        <div class="item-description">Military-grade cutting tool</div>
+                        <div>+20 Click Power permanently</div>
+                        <div class="item-cost">Cost: <span id="itemCost3">1000</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade20">
-                    <div class="upgrade-name">🌟 Universal Ending</div>
-                    <div class="upgrade-description">The final solution to existence</div>
-                    <div>+10000000 kills per second</div>
-                    <div class="upgrade-cost">Cost: <span id="cost20">1000000000</span> victims</div>
-                </div>
+                    <div class="item" id="item4">
+                        <div class="item-name">💉 Adrenaline Shot</div>
+                        <div class="item-description">Boosts performance temporarily</div>
+                        <div>+50% Click Power for 60 seconds</div>
+                        <div class="item-cost">Cost: <span id="itemCost4">500</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade21">
-                    <div class="upgrade-name">💫 Reality Shredder</div>
-                    <div class="upgrade-description">Tear through the fabric of being</div>
-                    <div>+50000000 kills per click</div>
-                    <div class="upgrade-cost">Cost: <span id="cost21">5000000000</span> victims</div>
-                </div>
+                    <div class="item" id="item5">
+                        <div class="item-name">🩸 Blood Vial</div>
+                        <div class="item-description">Contains essence of victims</div>
+                        <div>+10% Critical Chance permanently</div>
+                        <div class="item-cost">Cost: <span id="itemCost5">2000</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade22">
-                    <div class="upgrade-name">🕳️ Dimensional Ripper</div>
-                    <div class="upgrade-description">Break the barriers between worlds</div>
-                    <div>+100000000 kills per second</div>
-                    <div class="upgrade-cost">Cost: <span id="cost22">10000000000</span> victims</div>
-                </div>
+                    <div class="item" id="item6">
+                        <div class="item-name">⚔️ Legendary Blade</div>
+                        <div class="item-description">Forged from pure evil</div>
+                        <div>+100 Click Power permanently</div>
+                        <div class="item-cost">Cost: <span id="itemCost6">10000</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade23">
-                    <div class="upgrade-name">🔮 Fate Manipulator</div>
-                    <div class="upgrade-description">Control destiny itself</div>
-                    <div>+500000000 kills per click</div>
-                    <div class="upgrade-cost">Cost: <span id="cost23">50000000000</span> victims</div>
-                </div>
+                    <div class="item" id="item7">
+                        <div class="item-name">🏥 First Aid Kit</div>
+                        <div class="item-description">Complete medical supplies</div>
+                        <div>Full Health + 25 Max Health</div>
+                        <div class="item-cost">Cost: <span id="itemCost7">5000</span> victims</div>
+                    </div>
 
-                <div class="upgrade" id="upgrade24">
-                    <div class="upgrade-name">⚡ God Slayer</div>
-                    <div class="upgrade-description">Even deities fear your blade</div>
-                    <div>+1000000000 kills per second</div>
-                    <div class="upgrade-cost">Cost: <span id="cost24">100000000000</span> victims</div>
-                </div>
-
-                <div class="upgrade" id="upgrade25">
-                    <div class="upgrade-name">🎆 Big Bang Reverser</div>
-                    <div class="upgrade-description">Undo creation with a single click</div>
-                    <div>+∞ kills per click</div>
-                    <div class="upgrade-cost">Cost: <span id="cost25">1000000000000</span> victims</div>
-                </div>
-
-                <div class="upgrade" id="upgrade26">
-                    <div class="upgrade-name">🏆 Death Incarnate</div>
-                    <div class="upgrade-description">Become the embodiment of death</div>
-                    <div>+10% critical chance</div>
-                    <div class="upgrade-cost">Cost: <span id="cost26">500000</span> victims</div>
-                </div>
-
-                <div class="upgrade" id="upgrade27">
-                    <div class="upgrade-name">💰 Blood Money</div>
-                    <div class="upgrade-description">Profit from every kill</div>
-                    <div>+2x victim rewards</div>
-                    <div class="upgrade-cost">Cost: <span id="cost27">1000000</span> victims</div>
-                </div>
-
-                <div class="upgrade" id="upgrade28">
-                    <div class="upgrade-name">🎯 Perfect Aim</div>
-                    <div class="upgrade-description">Never miss your target</div>
-                    <div>+15% critical chance</div>
-                    <div class="upgrade-cost">Cost: <span id="cost28">2000000</span> victims</div>
-                </div>
-
-                <div class="upgrade" id="upgrade29">
-                    <div class="upgrade-name">🧪 Toxic Blood</div>
-                    <div class="upgrade-description">Your victims spread death</div>
-                    <div>+3x auto kills</div>
-                    <div class="upgrade-cost">Cost: <span id="cost29">5000000</span> victims</div>
-                </div>
-
-                <div class="upgrade" id="upgrade30">
-                    <div class="upgrade-name">👑 King of Killers</div>
-                    <div class="upgrade-description">Rule over all serial killers</div>
-                    <div>+5x all production</div>
-                    <div class="upgrade-cost">Cost: <span id="cost30">10000000</span> victims</div>
+                    <div class="item" id="item8">
+                        <div class="item-name">💀 Death's Scythe</div>
+                        <div class="item-description">The ultimate weapon</div>
+                        <div>+500 Click Power permanently</div>
+                        <div class="item-cost">Cost: <span id="itemCost8">100000</span> victims</div>
+                    </div>
                 </div>
             </div>
 
@@ -1212,17 +1385,31 @@
             lastHardVictim: 0,
             health: 100,
             maxHealth: 100,
-            upgrades: {}
+            upgrades: {},
+            inventory: {},
+            adrenalineBoost: 0,
+            adrenalineEnd: 0
         };
 
-        for (let i = 1; i <= 30; i++) {
-            const baseCosts = [10, 100, 50, 500, 2000, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000, 2500000, 5000000, 10000000, 25000000, 50000000, 100000000, 1000000000, 5000000000, 10000000000, 50000000000, 100000000000, 1000000000000, 500000, 1000000, 2000000, 5000000, 10000000];
+        for (let i = 1; i <= 15; i++) {
+            const baseCosts = [10, 100, 50, 500, 2000, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000, 2500000, 5000000];
             gameState.upgrades[`upgrade${i}`] = { 
                 cost: baseCosts[i-1] || Math.pow(10, i), 
                 owned: 0, 
                 baseCost: baseCosts[i-1] || Math.pow(10, i) 
             };
         }
+
+        const items = {
+            item1: { name: 'Medical Bandage', icon: '🩹', cost: 50, type: 'consumable' },
+            item2: { name: 'Steel Knife', icon: '🔪', cost: 200, type: 'permanent' },
+            item3: { name: 'Combat Blade', icon: '🗡️', cost: 1000, type: 'permanent' },
+            item4: { name: 'Adrenaline Shot', icon: '💉', cost: 500, type: 'consumable' },
+            item5: { name: 'Blood Vial', icon: '🩸', cost: 2000, type: 'permanent' },
+            item6: { name: 'Legendary Blade', icon: '⚔️', cost: 10000, type: 'permanent' },
+            item7: { name: 'First Aid Kit', icon: '🏥', cost: 5000, type: 'consumable' },
+            item8: { name: 'Deaths Scythe', icon: '💀', cost: 100000, type: 'permanent' }
+        };
 
         let allAchievements = [];
 
@@ -1299,7 +1486,8 @@
             { id: 'bossSlayer', name: 'Boss Slayer 👑', condition: (state) => state.bossKills >= 5, unlocked: false },
             { id: 'millionaire', name: 'Million Killer 💰', condition: (state) => state.score >= 1000000, unlocked: false },
             { id: 'survivor', name: 'Survivor 💚', condition: (state) => state.health >= 80, unlocked: false },
-            { id: 'nearDeath', name: 'Near Death 💀', condition: (state) => state.health <= 10, unlocked: false }
+            { id: 'nearDeath', name: 'Near Death 💀', condition: (state) => state.health <= 10, unlocked: false },
+            { id: 'collector', name: 'Item Collector 🎒', condition: (state) => Object.keys(state.inventory).length >= 5, unlocked: false }
         ];
 
         const victimNames = [
@@ -1321,8 +1509,9 @@
             "Tip: Boss fights give huge rewards!",
             "Tip: Don't let hard victims escape!",
             "Tip: Keep your health above 0 to survive!",
-            "Tip: Darkness level increases with kills!",
-            "Tip: Upload PNG sprites to GitHub for custom graphics!",
+            "Tip: Use bandages to heal when low on health!",
+            "Tip: Buy knives to permanently boost power!",
+            "Tip: Inventory items can save your life!",
             "Tip: Auto-save happens every 15 seconds!"
         ];
 
@@ -1340,6 +1529,96 @@
         const autosaveIndicator = document.getElementById('autosaveIndicator');
         const healthFill = document.getElementById('healthFill');
         const healthText = document.getElementById('healthText');
+        const inventoryGrid = document.getElementById('inventoryGrid');
+
+        function initializeInventory() {
+            for (let i = 0; i < 12; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'inventory-slot';
+                slot.id = `slot${i}`;
+                slot.onclick = () => useInventoryItem(i);
+                inventoryGrid.appendChild(slot);
+            }
+            updateInventoryDisplay();
+        }
+
+        function addToInventory(itemId) {
+            const item = items[itemId];
+            if (!gameState.inventory[itemId]) {
+                gameState.inventory[itemId] = 0;
+            }
+            gameState.inventory[itemId]++;
+            updateInventoryDisplay();
+            showAchievement(`📦 Acquired ${item.name}! Check your inventory!`);
+        }
+
+        function updateInventoryDisplay() {
+            const slots = document.querySelectorAll('.inventory-slot');
+            slots.forEach(slot => {
+                slot.innerHTML = '';
+                slot.classList.remove('has-item');
+            });
+
+            let slotIndex = 0;
+            Object.keys(gameState.inventory).forEach(itemId => {
+                if (gameState.inventory[itemId] > 0 && slotIndex < 12) {
+                    const slot = document.getElementById(`slot${slotIndex}`);
+                    const item = items[itemId];
+                    
+                    slot.innerHTML = `
+                        <div class="inventory-item-icon">${item.icon}</div>
+                        <div class="inventory-item-count">${gameState.inventory[itemId]}</div>
+                    `;
+                    slot.classList.add('has-item');
+                    slot.setAttribute('data-item', itemId);
+                    slotIndex++;
+                }
+            });
+        }
+
+        function useInventoryItem(slotIndex) {
+            const slot = document.getElementById(`slot${slotIndex}`);
+            const itemId = slot.getAttribute('data-item');
+            
+            if (!itemId || !gameState.inventory[itemId] || gameState.inventory[itemId] <= 0) return;
+
+            const item = items[itemId];
+            
+            switch(itemId) {
+                case 'item1':
+                    gameState.health = Math.min(gameState.maxHealth, gameState.health + 25);
+                    showAchievement('🩹 Used bandage! +25 Health!');
+                    break;
+                case 'item4':
+                    gameState.adrenalineBoost = 0.5;
+                    gameState.adrenalineEnd = Date.now() + 60000;
+                    showAchievement('💉 Adrenaline activated! +50% power for 60s!');
+                    break;
+                case 'item7':
+                    gameState.health = gameState.maxHealth;
+                    gameState.maxHealth += 25;
+                    showAchievement('🏥 Used First Aid Kit! Full health + max health!');
+                    break;
+            }
+
+            if (item.type === 'consumable') {
+                gameState.inventory[itemId]--;
+                if (gameState.inventory[itemId] <= 0) {
+                    delete gameState.inventory[itemId];
+                }
+            }
+            
+            updateInventoryDisplay();
+            updateDisplay();
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.shop-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.shop-content').forEach(content => content.classList.remove('active'));
+            
+            document.querySelector(`.shop-tab:nth-child(${tabName === 'upgrades' ? '1' : '2'})`).classList.add('active');
+            document.getElementById(`${tabName}-content`).classList.add('active');
+        }
 
         function showLoadingScreen() {
             const loadingScreen = document.getElementById('loadingScreen');
@@ -1408,11 +1687,14 @@
                 lastHardVictim: 0,
                 health: 100,
                 maxHealth: 100,
-                upgrades: {}
+                upgrades: {},
+                inventory: {},
+                adrenalineBoost: 0,
+                adrenalineEnd: 0
             };
             
-            for (let i = 1; i <= 30; i++) {
-                const baseCosts = [10, 100, 50, 500, 2000, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000, 2500000, 5000000, 10000000, 25000000, 50000000, 100000000, 1000000000, 5000000000, 10000000000, 50000000000, 100000000000, 1000000000000, 500000, 1000000, 2000000, 5000000, 10000000];
+            for (let i = 1; i <= 15; i++) {
+                const baseCosts = [10, 100, 50, 500, 2000, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000, 2500000, 5000000];
                 gameState.upgrades[`upgrade${i}`] = { 
                     cost: baseCosts[i-1] || Math.pow(10, i), 
                     owned: 0, 
@@ -1424,11 +1706,12 @@
             allAchievements = [];
             achievementsElement.innerHTML = '';
             updateDisplay();
+            updateInventoryDisplay();
             showAchievement('🔄 Game Reset! Start your killing spree again!');
         }
 
         function autoSave() {
-            localStorage.setItem('dexterUltimateFinalGameState', JSON.stringify(gameState));
+            localStorage.setItem('dexterInventoryFinalGameState', JSON.stringify(gameState));
             showAutosaveIndicator();
         }
 
@@ -1436,9 +1719,17 @@
             return Math.random() * 100 < gameState.criticalChance;
         }
 
+        function getCurrentClickPower() {
+            let power = gameState.clickPower;
+            if (Date.now() < gameState.adrenalineEnd) {
+                power *= (1 + gameState.adrenalineBoost);
+            }
+            return power;
+        }
+
         function updateDisplay() {
             scoreElement.textContent = formatNumber(Math.floor(gameState.score));
-            clickPowerElement.textContent = formatNumber(gameState.clickPower);
+            clickPowerElement.textContent = formatNumber(getCurrentClickPower());
             autoKillsElement.textContent = formatNumber(gameState.autoKills);
             critChanceElement.textContent = Math.floor(gameState.criticalChance);
             bossKillsElement.textContent = gameState.bossKills;
@@ -1457,6 +1748,21 @@
                     } else {
                         upgrade.classList.remove('affordable');
                         upgrade.classList.add('unaffordable');
+                    }
+                }
+            });
+
+            Object.keys(items).forEach(itemId => {
+                const item = document.getElementById(itemId);
+                if (item) {
+                    const cost = items[itemId].cost;
+                    
+                    if (gameState.score >= cost) {
+                        item.classList.add('affordable');
+                        item.classList.remove('unaffordable');
+                    } else {
+                        item.classList.remove('affordable');
+                        item.classList.add('unaffordable');
                     }
                 }
             });
@@ -1596,6 +1902,26 @@
             bossSprite.className = `character-sprite ${currentBoss.sprite}`;
             bossHealth.style.width = '100%';
             bossDialogue.textContent = currentBoss.dialogue[0];
+            
+            createBossEffects();
+        }
+
+        function createBossEffects() {
+            const effectsContainer = document.getElementById('bossEffects');
+            
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const spark = document.createElement('div');
+                    spark.className = 'boss-spark';
+                    spark.style.left = Math.random() * 100 + '%';
+                    spark.style.top = Math.random() * 100 + '%';
+                    effectsContainer.appendChild(spark);
+                    
+                    setTimeout(() => {
+                        spark.remove();
+                    }, 2000);
+                }, i * 200);
+            }
         }
 
         function declineBossFight() {
@@ -1611,20 +1937,27 @@
             
             switch (attackType) {
                 case 'stab':
-                    damage = gameState.clickPower * 2.2;
+                    damage = getCurrentClickPower() * 2.2;
                     bossDialogue.textContent = "Your blade pierces through their defenses!";
+                    createBossEffects();
                     break;
                 case 'slice':
-                    damage = gameState.clickPower * 1.8;
+                    damage = getCurrentClickPower() * 1.8;
                     bossDialogue.textContent = "A masterful slice across their weakness!";
                     break;
                 case 'follow':
-                    damage = gameState.clickPower * 3.5;
+                    damage = getCurrentClickPower() * 3.5;
                     bossDialogue.textContent = "You tracked them to their fatal flaw!";
                     break;
                 case 'analyze':
-                    damage = gameState.clickPower * 2.8;
+                    damage = getCurrentClickPower() * 2.8;
                     bossDialogue.textContent = "Analysis reveals their critical vulnerability!";
+                    break;
+                case 'ultimate':
+                    damage = getCurrentClickPower() * 5;
+                    bossDialogue.textContent = "ULTIMATE KILL! Maximum damage dealt!";
+                    createBossEffects();
+                    createBossEffects();
                     break;
             }
             
@@ -1653,7 +1986,11 @@
             gameState.bossKills++;
             gameState.health = Math.min(gameState.maxHealth, gameState.health + 25);
             
-            showAchievement(`Defeated ${currentBoss.name}! 👑 Massive power boost!`);
+            showAchievement(`🎉 Defeated ${currentBoss.name}! 👑 Massive power boost!`);
+            
+            createBossEffects();
+            createBossEffects();
+            createBossEffects();
             
             bossArena.classList.remove('active');
             currentBoss = null;
@@ -1673,7 +2010,7 @@
 
         clickButton.addEventListener('click', (e) => {
             const isCrit = isCriticalHit();
-            let kills = gameState.clickPower;
+            let kills = getCurrentClickPower();
             
             if (isCrit) {
                 kills *= 4;
@@ -1767,26 +2104,7 @@
             upgrade12: () => gameState.autoKills += 5000,
             upgrade13: () => gameState.clickPower += 10000,
             upgrade14: () => gameState.autoKills += 25000,
-            upgrade15: () => gameState.clickPower += 50000,
-            upgrade16: () => gameState.autoKills += 100000,
-            upgrade17: () => gameState.clickPower += 250000,
-            upgrade18: () => gameState.autoKills += 500000,
-            upgrade19: () => gameState.clickPower += 1000000,
-            upgrade20: () => gameState.autoKills += 10000000,
-            upgrade21: () => gameState.clickPower += 50000000,
-            upgrade22: () => gameState.autoKills += 100000000,
-            upgrade23: () => gameState.clickPower += 500000000,
-            upgrade24: () => gameState.autoKills += 1000000000,
-            upgrade25: () => gameState.clickPower = gameState.clickPower * 1000,
-            upgrade26: () => gameState.criticalChance += 10,
-            upgrade27: () => gameState.autoKills = gameState.autoKills * 2,
-            upgrade28: () => gameState.criticalChance += 15,
-            upgrade29: () => gameState.autoKills = gameState.autoKills * 3,
-            upgrade30: () => {
-                gameState.clickPower *= 5;
-                gameState.autoKills *= 5;
-                gameState.criticalChance += 20;
-            }
+            upgrade15: () => gameState.clickPower += 50000
         };
 
         Object.keys(upgradeEffects).forEach(upgradeId => {
@@ -1827,17 +2145,63 @@
             }, 600);
         }
 
+        Object.keys(items).forEach(itemId => {
+            const element = document.getElementById(itemId);
+            if (element) {
+                element.addEventListener('click', () => buyItem(itemId));
+            }
+        });
+
+        function buyItem(itemId) {
+            const item = items[itemId];
+            if (gameState.score >= item.cost) {
+                gameState.score -= item.cost;
+                
+                if (item.type === 'permanent') {
+                    switch(itemId) {
+                        case 'item2':
+                            gameState.clickPower += 5;
+                            showAchievement('🔪 Steel Knife acquired! +5 Click Power!');
+                            break;
+                        case 'item3':
+                            gameState.clickPower += 20;
+                            showAchievement('🗡️ Combat Blade acquired! +20 Click Power!');
+                            break;
+                        case 'item5':
+                            gameState.criticalChance += 10;
+                            showAchievement('🩸 Blood Vial used! +10% Critical Chance!');
+                            break;
+                        case 'item6':
+                            gameState.clickPower += 100;
+                            showAchievement('⚔️ Legendary Blade acquired! +100 Click Power!');
+                            break;
+                        case 'item8':
+                            gameState.clickPower += 500;
+                            showAchievement('💀 Deaths Scythe acquired! +500 Click Power!');
+                            break;
+                    }
+                } else {
+                    addToInventory(itemId);
+                }
+                
+                updateDisplay();
+                showPurchaseEffect(itemId);
+                checkAchievements();
+            }
+        }
+
         function saveGame() {
-            localStorage.setItem('dexterUltimateFinalGameState', JSON.stringify(gameState));
+            localStorage.setItem('dexterInventoryFinalGameState', JSON.stringify(gameState));
             showAchievement('Game Saved Successfully! 💾');
         }
 
         function loadGame() {
-            const savedGame = localStorage.getItem('dexterUltimateFinalGameState');
+            const savedGame = localStorage.getItem('dexterInventoryFinalGameState');
             if (savedGame) {
                 try {
                     gameState = { ...gameState, ...JSON.parse(savedGame) };
                     updateDisplay();
+                    updateInventoryDisplay();
                     showAchievement('Game Loaded Successfully! 📁');
                 } catch (e) {
                     showAchievement('Load Failed! ❌');
@@ -1870,14 +2234,16 @@
 
         window.addEventListener('load', () => {
             showLoadingScreen();
+            initializeInventory();
             currentVictimElement.textContent = victimNames[Math.floor(Math.random() * victimNames.length)];
             updateDisplay();
             
-            const savedGame = localStorage.getItem('dexterUltimateFinalGameState');
+            const savedGame = localStorage.getItem('dexterInventoryFinalGameState');
             if (savedGame) {
                 try {
                     gameState = { ...gameState, ...JSON.parse(savedGame) };
                     updateDisplay();
+                    updateInventoryDisplay();
                 } catch (e) {
                     console.log('Could not load saved game');
                 }
