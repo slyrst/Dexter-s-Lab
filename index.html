@@ -1059,6 +1059,236 @@
             box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
         }
 
+        .mobile-joystick {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 120px;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 4px solid #ff4444;
+            border-radius: 50%;
+            display: none;
+            z-index: 10001;
+            touch-action: none;
+        }
+
+        .mobile-joystick.active {
+            display: block;
+        }
+
+        .joystick-knob {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #ff0000, #ff4444);
+            border: 3px solid #ffff00;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+        }
+
+        .mobile-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 10001;
+        }
+
+        .mobile-controls.active {
+            display: flex;
+        }
+
+        .mobile-action-btn {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #8b0000, #ff0000);
+            border: 4px solid #ff4444;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+        }
+
+        .mobile-action-btn:active {
+            transform: scale(0.9);
+            background: linear-gradient(45deg, #ff4444, #ff6666);
+        }
+
+        .mobile-action-btn:disabled {
+            opacity: 0.4;
+            background: linear-gradient(45deg, #444444, #666666);
+            border-color: #888888;
+        }
+
+        .mobile-touch-feedback {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, rgba(255, 255, 0, 0.3), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 999;
+            animation: touchRipple 0.6s ease-out forwards;
+        }
+
+        @keyframes touchRipple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-layout {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .shop-container, .notifications-container {
+                max-height: 250px;
+                padding: 15px;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .click-button {
+                width: 250px;
+                height: 250px;
+                font-size: 5rem;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .undertale-btn {
+                padding: 12px 20px;
+                font-size: 1.2rem;
+                min-width: 100px;
+            }
+            
+            .battle-box {
+                width: 90vw;
+                height: 300px;
+                max-width: 500px;
+            }
+            
+            .boss-container {
+                width: 95%;
+                max-width: 500px;
+            }
+            
+            .character-sprite {
+                width: 100px;
+                height: 130px;
+            }
+            
+            .battle-inventory {
+                width: 90vw;
+                max-width: 400px;
+                padding: 20px;
+            }
+            
+            .battle-inventory-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+            
+            .battle-inventory-slot {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .inventory-container {
+                width: 250px;
+                bottom: 180px;
+                right: 15px;
+            }
+            
+            .health-container {
+                bottom: 180px;
+                left: 15px;
+            }
+            
+            .boss-dialogue {
+                max-width: 90vw;
+                font-size: 1rem;
+            }
+            
+            .boss-actions {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 1.8rem;
+            }
+            
+            .click-button {
+                width: 200px;
+                height: 200px;
+                font-size: 4rem;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .battle-box {
+                height: 250px;
+            }
+            
+            .character-sprite {
+                width: 80px;
+                height: 100px;
+            }
+            
+            .mobile-joystick {
+                width: 100px;
+                height: 100px;
+                bottom: 20px;
+                left: 20px;
+            }
+            
+            .joystick-knob {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .mobile-controls {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .mobile-action-btn {
+                width: 70px;
+                height: 70px;
+                font-size: 1.2rem;
+            }
+        }
+
         .fight-target {
             width: 100px;
             height: 20px;
@@ -1461,6 +1691,17 @@
         <button class="battle-inventory-close" onclick="closeBattleInventory()">✖️ CLOSE</button>
     </div>
 
+    <div class="mobile-joystick" id="mobileJoystick">
+        <div class="joystick-knob" id="joystickKnob"></div>
+    </div>
+
+    <div class="mobile-controls" id="mobileControls">
+        <div class="mobile-action-btn" id="mobileFight" onclick="undertaleAction('fight')">⚔️</div>
+        <div class="mobile-action-btn" id="mobileTalk" onclick="undertaleAction('talk')">💬</div>
+        <div class="mobile-action-btn" id="mobileItems" onclick="undertaleAction('items')">🎒</div>
+        <div class="mobile-action-btn" id="mobileEscape" onclick="undertaleAction('mercy')">🏃</div>
+    </div>
+
     <div class="game-layout">
         <div class="shop-container">
             <div class="shop-title">🛒 SLY'S SHOP 🛒</div>
@@ -1771,10 +2012,10 @@
                 maxHealth: 800,
                 sprite: "trinity-sprite",
                 dialogue: [
-                    "I am the Alpha and Omega, the beginning and the end...",
-                    "Your dark passenger is nothing compared to my divine mission...",
-                    "Four walls make the perfect tomb for your soul...",
-                    "I have been killing longer than you've existed...",
+                    "Hello, Dexter morgan.",
+                    "Its already over.",
+                    "Your just like a kid.",
+                    "Nice to meet you, Dexter Morgan.",
                     "The cycle of death must continue through me..."
                 ],
                 attacks: ['trinity_symbols', 'four_walls', 'divine_rain'],
@@ -1786,10 +2027,10 @@
                 maxHealth: 600,
                 sprite: "ice-truck-sprite",
                 dialogue: [
-                    "Hello, Dexter Morgan, my dear brother...",
-                    "We're connected by blood and darkness...",
-                    "I left you gifts to remember me by...",
-                    "The ice preserves their beauty forever...",
+                    "Hey little brother.",
+                    "You cant be a killer and a hero. It doesnt work that way!",
+                    "Dex..",
+                    "I didnt deserve this did i?.",
                     "You cannot escape your true nature..."
                 ],
                 attacks: ['ice_shards', 'frozen_limbs', 'cold_touch'],
@@ -1818,6 +2059,10 @@
         let projectiles = [];
         let battlePhase = 0;
         let fightTimingActive = false;
+        let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        let joystickActive = false;
+        let joystickCenter = { x: 0, y: 0 };
+        let touchStartPos = { x: 0, y: 0 };
 
         const achievements = [
             { id: 'firstKill', name: 'First Blood 🔪', condition: (state) => state.score >= 1, unlocked: false },
@@ -2239,10 +2484,25 @@
             const bossSprite = document.getElementById('bossSprite');
             const bossHealth = document.getElementById('bossHealth');
             const bossDialogue = document.getElementById('bossDialogue');
+            const battleBox = document.getElementById('battleBox');
+            const fightTarget = document.getElementById('fightTarget');
+            const battleInventory = document.getElementById('battleInventory');
             
             bossAlertsElement.innerHTML = '';
             
+            battleBox.innerHTML = '<div class="player-soul" id="playerSoul"></div>';
+            
+            fightTarget.style.display = 'none';
+            battleInventory.classList.remove('active');
+            fightTimingActive = false;
+            
+            document.removeEventListener('keydown', handleBattleInput);
+            
             bossArena.classList.add('active');
+            
+            if (isMobile) {
+                showMobileControls();
+            }
             
             bossSprite.className = `character-sprite ${currentBoss.sprite}`;
             bossHealth.style.width = '100%';
@@ -2254,6 +2514,7 @@
             battlePhase = 0;
             
             updatePlayerSoulPosition();
+            enableUndertaleButtons();
             setupBattleControls();
         }
 
@@ -2758,15 +3019,28 @@
 
         function startProjectilePhase() {
             const projectileInterval = setInterval(() => {
+                if (battleState === 'escaped' || battleState === 'victory' || !currentBoss) {
+                    clearInterval(projectileInterval);
+                    projectiles.forEach(proj => {
+                        if (proj.element && proj.element.parentNode) {
+                            proj.element.remove();
+                        }
+                    });
+                    projectiles = [];
+                    return;
+                }
+                
                 updateProjectiles();
                 checkCollisions();
                 
                 if (projectiles.length === 0) {
                     clearInterval(projectileInterval);
                     setTimeout(() => {
-                        battleState = 'menu';
-                        enableUndertaleButtons();
-                        document.getElementById('bossDialogue').textContent = "Your turn! Choose your action!";
+                        if (battleState !== 'escaped' && battleState !== 'victory' && currentBoss) {
+                            battleState = 'menu';
+                            enableUndertaleButtons();
+                            document.getElementById('bossDialogue').textContent = "Your turn! Choose your action!";
+                        }
                     }, 1000);
                 }
             }, 50);
@@ -2779,7 +3053,7 @@
                     }
                 });
                 projectiles = [];
-                if (battleState !== 'menu') {
+                if (battleState !== 'escaped' && battleState !== 'victory' && currentBoss) {
                     battleState = 'menu';
                     enableUndertaleButtons();
                     document.getElementById('bossDialogue').textContent = "Your turn! Choose your action!";
@@ -2832,7 +3106,7 @@
         }
 
         function checkCollisions() {
-            if (battleState === 'victory') return;
+            if (battleState === 'victory' || battleState === 'escaped' || !currentBoss) return;
             
             const soulRect = {
                 x: playerSoulPos.x,
@@ -2858,10 +3132,14 @@
                     updateHealthDisplay();
                     
                     const playerSoul = document.getElementById('playerSoul');
-                    playerSoul.style.background = '#ffffff';
-                    setTimeout(() => {
-                        playerSoul.style.background = '#ff0000';
-                    }, 200);
+                    if (playerSoul) {
+                        playerSoul.style.background = '#ffffff';
+                        setTimeout(() => {
+                            if (playerSoul) {
+                                playerSoul.style.background = '#ff0000';
+                            }
+                        }, 200);
+                    }
                     
                     proj.element.remove();
                     const index = projectiles.indexOf(proj);
@@ -2929,6 +3207,12 @@
 
         function escapeBoss() {
             const bossArena = document.getElementById('bossArena');
+            const battleBox = document.getElementById('battleBox');
+            const fightTarget = document.getElementById('fightTarget');
+            const battleInventory = document.getElementById('battleInventory');
+            
+            battleState = 'escaped';
+            fightTimingActive = false;
             
             projectiles.forEach(proj => {
                 if (proj.element && proj.element.parentNode) {
@@ -2937,11 +3221,23 @@
             });
             projectiles = [];
             
+            battleBox.innerHTML = '<div class="player-soul" id="playerSoul"></div>';
+            
+            fightTarget.style.display = 'none';
+            battleInventory.classList.remove('active');
+            
+            enableUndertaleButtons();
+            hideMobileControls();
+            
             document.removeEventListener('keydown', handleBattleInput);
             
-            bossArena.classList.remove('active');
-            currentBoss = null;
-            battleState = 'menu';
+            setTimeout(() => {
+                bossArena.classList.remove('active');
+                currentBoss = null;
+                battleState = 'menu';
+                playerSoulPos = { x: 290, y: 190 };
+                updatePlayerSoulPosition();
+            }, 1000);
             
             showAchievement('You escaped into the shadows... this time. 🏃');
         }
@@ -3197,6 +3493,162 @@
                 showAchievement('Ultimate Cheat Activated! 🎮');
             }
         });
+
+        function showMobileControls() {
+            const mobileJoystick = document.getElementById('mobileJoystick');
+            const mobileControls = document.getElementById('mobileControls');
+            
+            mobileJoystick.classList.add('active');
+            mobileControls.classList.add('active');
+            
+            setupJoystick();
+            updateMobileButtonStates();
+        }
+
+        function hideMobileControls() {
+            const mobileJoystick = document.getElementById('mobileJoystick');
+            const mobileControls = document.getElementById('mobileControls');
+            
+            mobileJoystick.classList.remove('active');
+            mobileControls.classList.remove('active');
+            
+            joystickActive = false;
+        }
+
+        function setupJoystick() {
+            const joystick = document.getElementById('mobileJoystick');
+            const knob = document.getElementById('joystickKnob');
+            
+            const joystickRect = joystick.getBoundingClientRect();
+            joystickCenter.x = joystickRect.width / 2;
+            joystickCenter.y = joystickRect.height / 2;
+            
+            joystick.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                joystickActive = true;
+                const touch = e.touches[0];
+                const rect = joystick.getBoundingClientRect();
+                touchStartPos.x = touch.clientX - rect.left;
+                touchStartPos.y = touch.clientY - rect.top;
+            });
+            
+            joystick.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (!joystickActive) return;
+                
+                const touch = e.touches[0];
+                const rect = joystick.getBoundingClientRect();
+                const touchX = touch.clientX - rect.left;
+                const touchY = touch.clientY - rect.top;
+                
+                const dx = touchX - joystickCenter.x;
+                const dy = touchY - joystickCenter.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const maxDistance = joystickCenter.x - 25;
+                
+                if (distance > maxDistance) {
+                    const angle = Math.atan2(dy, dx);
+                    const limitedX = joystickCenter.x + Math.cos(angle) * maxDistance;
+                    const limitedY = joystickCenter.y + Math.sin(angle) * maxDistance;
+                    knob.style.left = limitedX - 25 + 'px';
+                    knob.style.top = limitedY - 25 + 'px';
+                } else {
+                    knob.style.left = touchX - 25 + 'px';
+                    knob.style.top = touchY - 25 + 'px';
+                }
+                
+                const speed = 6;
+                const moveX = (dx / maxDistance) * speed;
+                const moveY = (dy / maxDistance) * speed;
+                
+                playerSoulPos.x += moveX;
+                playerSoulPos.y += moveY;
+                
+                playerSoulPos.x = Math.max(20, Math.min(560, playerSoulPos.x));
+                playerSoulPos.y = Math.max(20, Math.min(360, playerSoulPos.y));
+                
+                updatePlayerSoulPosition();
+            });
+            
+            joystick.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                joystickActive = false;
+                knob.style.left = '50%';
+                knob.style.top = '50%';
+                knob.style.transform = 'translate(-50%, -50%)';
+            });
+        }
+
+        function updateMobileButtonStates() {
+            const mobileFight = document.getElementById('mobileFight');
+            const mobileTalk = document.getElementById('mobileTalk');
+            const mobileItems = document.getElementById('mobileItems');
+            const mobileEscape = document.getElementById('mobileEscape');
+            
+            const isDisabled = battleState === 'attacking';
+            
+            mobileFight.disabled = isDisabled;
+            mobileTalk.disabled = isDisabled;
+            mobileItems.disabled = isDisabled;
+            mobileEscape.disabled = isDisabled;
+        }
+
+        function disableUndertaleButtons() {
+            document.getElementById('fightBtn').disabled = true;
+            document.getElementById('talkBtn').disabled = true;
+            document.getElementById('itemsBtn').disabled = true;
+            document.getElementById('mercyBtn').disabled = true;
+            
+            if (isMobile) {
+                updateMobileButtonStates();
+            }
+        }
+
+        function enableUndertaleButtons() {
+            document.getElementById('fightBtn').disabled = false;
+            document.getElementById('talkBtn').disabled = false;
+            document.getElementById('itemsBtn').disabled = false;
+            document.getElementById('mercyBtn').disabled = false;
+            
+            if (isMobile) {
+                updateMobileButtonStates();
+            }
+        }
+
+        function createTouchFeedback(x, y) {
+            const feedback = document.createElement('div');
+            feedback.className = 'mobile-touch-feedback';
+            feedback.style.left = (x - 30) + 'px';
+            feedback.style.top = (y - 30) + 'px';
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                if (document.body.contains(feedback)) {
+                    document.body.removeChild(feedback);
+                }
+            }, 600);
+        }
+
+        if (isMobile) {
+            document.addEventListener('touchstart', (e) => {
+                const touch = e.touches[0];
+                createTouchFeedback(touch.clientX, touch.clientY);
+            });
+            
+            clickButton.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                clickButton.click();
+            });
+            
+            document.querySelectorAll('.mobile-action-btn').forEach(btn => {
+                btn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    if (!btn.disabled) {
+                        btn.click();
+                    }
+                });
+            });
+        }
     </script>
 </body>
 </html></parameter>
