@@ -127,6 +127,138 @@
             min-width: 200px;
         }
 
+        .player-hp-container {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #ff4444;
+            border-radius: 15px;
+            padding: 15px 20px;
+            z-index: 1000;
+            min-width: 200px;
+        }
+
+        .player-hp-bar {
+            width: 180px;
+            height: 25px;
+            background: rgba(255, 68, 68, 0.3);
+            border: 2px solid #ff4444;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .player-hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4444, #ff6666);
+            width: 100%;
+            transition: width 0.3s ease;
+            border-radius: 12px;
+        }
+
+        .player-hp-text {
+            color: #ff6666;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .friends-section {
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.7);
+            border: 3px solid #8b0000;
+            margin-top: 20px;
+        }
+
+        .friends-title {
+            font-size: 2rem;
+            color: #ff4444;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 68, 68, 0.9);
+        }
+
+        .friend-card {
+            background: rgba(139, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 15px;
+            border: 3px solid #8b0000;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .friend-card:hover {
+            border-color: #ff4444;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 68, 68, 0.4);
+        }
+
+        .friend-name {
+            font-size: 1.3rem;
+            color: #ff4444;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .friend-relationship {
+            color: #ffaa44;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .friend-level {
+            color: #cccccc;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        .friend-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .friend-btn {
+            padding: 8px 15px;
+            background: linear-gradient(45deg, #8b0000, #ff0000);
+            border: 2px solid #ff4444;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+        }
+
+        .friend-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5);
+        }
+
+        .friend-btn.expensive {
+            border-color: #ffaa44;
+            background: linear-gradient(45deg, #aa6600, #ffaa44);
+        }
+
+        .lifestyle-section {
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.7);
+            border: 3px solid #8b0000;
+            margin-top: 20px;
+        }
+
+        .lifestyle-title {
+            font-size: 2rem;
+            color: #ff4444;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 68, 68, 0.9);
+        }
+
         .health-bar {
             width: 180px;
             height: 25px;
@@ -1647,6 +1779,13 @@
         <div class="health-text" id="healthText">Health: 100/100</div>
     </div>
 
+    <div class="player-hp-container">
+        <div class="player-hp-bar">
+            <div class="player-hp-fill" id="playerHPFill"></div>
+        </div>
+        <div class="player-hp-text" id="playerHPText">Battle HP: 100/100</div>
+    </div>
+
     <div class="inventory-container">
         <div class="inventory-title">🎒 INVENTORY</div>
         <div class="inventory-grid" id="inventoryGrid"></div>
@@ -1898,6 +2037,92 @@
                 </ol>
                 <p><strong>Pro Tip:</strong> Use transparent PNG backgrounds for best visual effect!</p>
             </div>
+
+            <div class="friends-section">
+                <div class="friends-title">👥 FRIENDS & FAMILY</div>
+                
+                <div class="friend-card" id="debraCard">
+                    <div class="friend-name">👧 Debra Morgan</div>
+                    <div class="friend-relationship">Step-Sister</div>
+                    <div class="friend-level">Relationship Level: <span id="debraLevel">0</span></div>
+                    <div class="friend-actions">
+                        <button class="friend-btn" onclick="improveFriend('debra', 1000)">💬 Talk (+1 Level) - 1K victims</button>
+                        <button class="friend-btn" onclick="improveFriend('debra', 5000)">🎁 Gift (+3 Levels) - 5K victims</button>
+                        <button class="friend-btn expensive" onclick="improveFriend('debra', 25000)">💍 Propose Marriage - 25K victims</button>
+                    </div>
+                </div>
+
+                <div class="friend-card" id="ritaCard">
+                    <div class="friend-name">💕 Rita Bennett</div>
+                    <div class="friend-relationship">Girlfriend</div>
+                    <div class="friend-level">Relationship Level: <span id="ritaLevel">0</span></div>
+                    <div class="friend-actions">
+                        <button class="friend-btn" onclick="improveFriend('rita', 2000)">❤️ Date Night (+2 Levels) - 2K victims</button>
+                        <button class="friend-btn" onclick="improveFriend('rita', 8000)">💎 Jewelry (+5 Levels) - 8K victims</button>
+                        <button class="friend-btn expensive" onclick="improveFriend('rita', 50000)">💒 Wedding Ceremony - 50K victims</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lifestyle-section">
+                <div class="lifestyle-title">🏠 LIFESTYLE UPGRADES</div>
+                
+                <div class="upgrade" id="house1">
+                    <div class="upgrade-name">🏠 Small House</div>
+                    <div class="upgrade-description">Upgrade from apartment to house</div>
+                    <div>+50 Max Health permanently</div>
+                    <div class="upgrade-cost">Cost: <span id="houseCost1">100000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="house2">
+                    <div class="upgrade-name">🏡 Family Home</div>
+                    <div class="upgrade-description">Perfect for family life</div>
+                    <div>+100 Max Health + 2x Friend XP</div>
+                    <div class="upgrade-cost">Cost: <span id="houseCost2">500000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="house3">
+                    <div class="upgrade-name">🏖️ Beach House</div>
+                    <div class="upgrade-description">Privacy for your dark work</div>
+                    <div>+200 Max Health + Perfect Kill Location</div>
+                    <div class="upgrade-cost">Cost: <span id="houseCost3">2000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="car1">
+                    <div class="upgrade-name">🚗 Car</div>
+                    <div class="upgrade-description">Faster victim hunting</div>
+                    <div>+10% Boss Encounter Rate</div>
+                    <div class="upgrade-cost">Cost: <span id="carCost1">50000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="car2">
+                    <div class="upgrade-name">🛻 Kill Truck</div>
+                    <div class="upgrade-description">Mobile body disposal</div>
+                    <div>+25% Boss Encounter Rate + Auto-Body Cleanup</div>
+                    <div class="upgrade-cost">Cost: <span id="carCost2">250000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="boat1">
+                    <div class="upgrade-name">⛵ Boat</div>
+                    <div class="upgrade-description">Ocean body disposal</div>
+                    <div>+500 Click Power + Perfect Evidence Disposal</div>
+                    <div class="upgrade-cost">Cost: <span id="boatCost1">1000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="job1">
+                    <div class="upgrade-name">🔬 Lab Job</div>
+                    <div class="upgrade-description">Access to forensics</div>
+                    <div>+1000 Victims/sec + Crime Scene Access</div>
+                    <div class="upgrade-cost">Cost: <span id="jobCost1">100000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="job2">
+                    <div class="upgrade-name">👮 Police Connection</div>
+                    <div class="upgrade-description">Inside information</div>
+                    <div>+5000 Victims/sec + Case File Access</div>
+                    <div class="upgrade-cost">Cost: <span id="jobCost2">750000</span> victims</div>
+                </div>
+            </div>
         </div>
 
         <div class="game-center">
@@ -1977,10 +2202,18 @@
             lastHardVictim: 0,
             health: 100,
             maxHealth: 100,
+            playerHP: 100,
+            maxPlayerHP: 100,
             upgrades: {},
             inventory: {},
             adrenalineBoost: 0,
-            adrenalineEnd: 0
+            adrenalineEnd: 0,
+            friends: {
+                debra: { relationship: 'step-sister', level: 0, married: false },
+                rita: { relationship: 'girlfriend', level: 0, married: false }
+            },
+            house: 'apartment',
+            lifestyle: 0
         };
 
         for (let i = 1; i <= 15; i++) {
@@ -2007,7 +2240,7 @@
 
         const bosses = {
             trinity: {
-                name: "Trinity Killer",
+            	name: "Trinity Killer",
                 health: 800,
                 maxHealth: 800,
                 sprite: "trinity-sprite",
@@ -2525,7 +2758,7 @@
         function handleBattleInput(e) {
             if (!document.getElementById('bossArena').classList.contains('active')) return;
             
-            const speed = 6;
+            const speed = 10;
             
             switch(e.key.toLowerCase()) {
                 case 'w':
@@ -3128,8 +3361,8 @@
                     soulRect.y < projRect.y + projRect.height &&
                     soulRect.y + soulRect.height > projRect.y) {
                     
-                    gameState.health -= 15;
-                    updateHealthDisplay();
+                    gameState.playerHP -= 15;
+                    updatePlayerHPDisplay();
                     
                     const playerSoul = document.getElementById('playerSoul');
                     if (playerSoul) {
@@ -3649,6 +3882,201 @@
                 });
             });
         }
+
+        function updatePlayerHPDisplay() {
+            const playerHPFill = document.getElementById('playerHPFill');
+            const playerHPText = document.getElementById('playerHPText');
+            
+            const hpPercent = (gameState.playerHP / gameState.maxPlayerHP) * 100;
+            playerHPFill.style.width = hpPercent + '%';
+            playerHPText.textContent = `Battle HP: ${Math.floor(gameState.playerHP)}/${gameState.maxPlayerHP}`;
+            
+            if (gameState.playerHP <= 0) {
+                gameState.playerHP = 0;
+                showAchievement('💀 BATTLE DEFEAT! Resetting game in 3 seconds...');
+                setTimeout(() => {
+                    resetGame();
+                }, 3000);
+            }
+        }
+
+        function resetGame() {
+            gameState = {
+                score: 0,
+                clickPower: 1,
+                autoKills: 0,
+                bodyParts: 0,
+                criticalChance: 5,
+                bossKills: 0,
+                darknessLevel: 1,
+                totalKills: 0,
+                lastBossEncounter: 0,
+                lastHardVictim: 0,
+                health: 100,
+                maxHealth: 100,
+                playerHP: 100,
+                maxPlayerHP: 100,
+                upgrades: {},
+                inventory: {},
+                adrenalineBoost: 0,
+                adrenalineEnd: 0,
+                friends: {
+                    debra: { relationship: 'step-sister', level: 0, married: false },
+                    rita: { relationship: 'girlfriend', level: 0, married: false }
+                },
+                house: 'apartment',
+                lifestyle: 0
+            };
+            
+            for (let i = 1; i <= 15; i++) {
+                const baseCosts = [10, 100, 50, 500, 2000, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000, 2500000, 5000000];
+                gameState.upgrades[`upgrade${i}`] = { 
+                    cost: baseCosts[i-1] || Math.pow(10, i), 
+                    owned: 0, 
+                    baseCost: baseCosts[i-1] || Math.pow(10, i) 
+                };
+            }
+            
+            achievements.forEach(achievement => achievement.unlocked = false);
+            allAchievements = [];
+            achievementsElement.innerHTML = '';
+            updateDisplay();
+            updateInventoryDisplay();
+            updatePlayerHPDisplay();
+            updateFriendsDisplay();
+            showAchievement('🔄 Game Reset! Start your journey again!');
+        }
+
+        function improveFriend(friendName, cost) {
+            if (gameState.score < cost) return;
+            
+            gameState.score -= cost;
+            const friend = gameState.friends[friendName];
+            
+            if (cost >= 25000 && friendName === 'debra' && !friend.married) {
+                friend.married = true;
+                friend.level += 10;
+                showAchievement(`💍 Married Debra! +10 relationship levels!`);
+                gameState.maxHealth += 100;
+            } else if (cost >= 50000 && friendName === 'rita' && !friend.married) {
+                friend.married = true;
+                friend.level += 15;
+                showAchievement(`💒 Married Rita! +15 relationship levels!`);
+                gameState.maxHealth += 150;
+                gameState.clickPower += 1000;
+            } else if (cost >= 5000) {
+                friend.level += 3;
+                showAchievement(`🎁 ${friendName === 'debra' ? 'Debra' : 'Rita'} loved the gift! +3 levels!`);
+            } else if (cost >= 2000) {
+                friend.level += 2;
+                showAchievement(`❤️ Great date with ${friendName === 'debra' ? 'Debra' : 'Rita'}! +2 levels!`);
+            } else {
+                friend.level += 1;
+                showAchievement(`💬 Nice talk with ${friendName === 'debra' ? 'Debra' : 'Rita'}! +1 level!`);
+            }
+            
+            updateDisplay();
+            updateFriendsDisplay();
+        }
+
+        function updateFriendsDisplay() {
+            document.getElementById('debraLevel').textContent = gameState.friends.debra.level;
+            document.getElementById('ritaLevel').textContent = gameState.friends.rita.level;
+            
+            const debraCard = document.getElementById('debraCard');
+            const ritaCard = document.getElementById('ritaCard');
+            
+            if (gameState.friends.debra.married) {
+                debraCard.querySelector('.friend-relationship').textContent = '💍 Married Step-Sister';
+                debraCard.style.background = 'rgba(255, 215, 0, 0.3)';
+            }
+            
+            if (gameState.friends.rita.married) {
+                ritaCard.querySelector('.friend-relationship').textContent = '💒 Wife';
+                ritaCard.style.background = 'rgba(255, 215, 0, 0.3)';
+            }
+        }
+
+        function buyLifestyleUpgrade(upgradeId, cost, effect) {
+            if (gameState.score >= cost) {
+                gameState.score -= cost;
+                effect();
+                
+                const upgrade = document.getElementById(upgradeId);
+                upgrade.style.opacity = '0.5';
+                upgrade.style.pointerEvents = 'none';
+                
+                updateDisplay();
+                showPurchaseEffect(upgradeId);
+            }
+        }
+
+        const lifestyleUpgrades = {
+            house1: () => {
+                gameState.maxHealth += 50;
+                gameState.house = 'house';
+                showAchievement('🏠 Bought a house! +50 Max Health!');
+            },
+            house2: () => {
+                gameState.maxHealth += 100;
+                gameState.house = 'family_home';
+                showAchievement('🏡 Family home acquired! +100 Max Health + 2x Friend XP!');
+            },
+            house3: () => {
+                gameState.maxHealth += 200;
+                gameState.house = 'beach_house';
+                showAchievement('🏖️ Beach house! +200 Max Health + Perfect Kill Location!');
+            },
+            car1: () => {
+                showAchievement('🚗 Car purchased! +10% Boss Encounter Rate!');
+            },
+            car2: () => {
+                showAchievement('🛻 Kill truck! +25% Boss Encounter Rate + Auto-Body Cleanup!');
+            },
+            boat1: () => {
+                gameState.clickPower += 500;
+                showAchievement('⛵ Boat acquired! +500 Click Power + Perfect Evidence Disposal!');
+            },
+            job1: () => {
+                gameState.autoKills += 1000;
+                showAchievement('🔬 Lab job secured! +1000 Victims/sec + Crime Scene Access!');
+            },
+            job2: () => {
+                gameState.autoKills += 5000;
+                showAchievement('👮 Police connection! +5000 Victims/sec + Case File Access!');
+            }
+        };
+
+        Object.keys(lifestyleUpgrades).forEach(upgradeId => {
+            const element = document.getElementById(upgradeId);
+            if (element) {
+                element.addEventListener('click', () => {
+                    const costElement = element.querySelector('.upgrade-cost span');
+                    const cost = parseInt(costElement.textContent);
+                    buyLifestyleUpgrade(upgradeId, cost, lifestyleUpgrades[upgradeId]);
+                });
+            }
+        });
+
+        const speed = 10;
+        
+        setInterval(() => {
+            if (document.getElementById('bossArena').classList.contains('active')) {
+                const moveX = (Math.random() - 0.5) * 2;
+                const moveY = (Math.random() - 0.5) * 2;
+                
+                playerSoulPos.x += moveX;
+                playerSoulPos.y += moveY;
+                
+                playerSoulPos.x = Math.max(20, Math.min(560, playerSoulPos.x));
+                playerSoulPos.y = Math.max(20, Math.min(360, playerSoulPos.y));
+            }
+        }, 100);
+
+        window.addEventListener('load', () => {
+            updatePlayerHPDisplay();
+            updateFriendsDisplay();
+        });
     </script>
 </body>
 </html></parameter>
