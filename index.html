@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dexter's Lab - Ultimate Edition 🔪</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d0000 50%, #000000 100%);
+            min-height: 100vh;
+            color: #ff6b6b;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000000 0%, #1a0000 50%, #2d0000 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 1s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-logo {
+            font-size: 5rem;
+            color: #ff0000;
+            text-shadow: 0 0 50px rgba(255, 0, 0, 1);
+            margin-bottom: 30px;
+            animation: logoGlow 2s ease infinite;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.1); filter: brightness(1.5); }
+        }
+
+        .loading-bar {
+            width: 400px;
+            height: 20px;
+            background: rgba(139, 0, 0, 0.3);
+            border: 3px solid #8b0000;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ff4444);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 12px;
+        }
+
+        .loading-tip {
+            color: #cccccc;
+            font-size: 1.2rem;
+            text-align: center;
+            max-width: 500px;
+            margin-top: 20px;
+            opacity: 0.9;
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a0000;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #8b0000, #ff0000);
+            border-radius: 10px;
+            border: 2px solid #4a0000;
+        }
+
+        .autosave-indicator {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #8b0000;
+            border-radius: 15px;
+            padding: 15px 20px;
+            color: #4caf50;
+            font-size: 1rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.5);
+        }
+
+        .autosave-indicator.show {
+            opacity: 1;
+        }
+
+        .health-container {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #8b0000;
+            border-radius: 15px;
+            padding: 15px 20px;
+            z-index: 1000;
+            min-width: 200px;
+        }
+
+        .health-bar {
+            width: 180px;
+            height: 25px;
+            background: rgba(139, 0, 0, 0.3);
+            border: 2px solid #8b0000;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ff4444);
+            width: 100%;
+            transition: width 0.3s ease;
+            border-radius: 12px;
+        }
+
+        .health-text {
+            color: #ff4444;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .game-layout {
+            display: flex;
+            min-height: 100vh;
+            padding: 25px;
+            gap: 30px;
+        }
+
+        .shop-container {
+            width: 400px;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.7);
+            border: 3px solid #8b0000;
+            max-height: calc(100vh - 50px);
+            overflow-y: auto;
+        }
+
+        .shop-title {
+            font-size: 2.5rem;
+            color: #ff4444;
+            text-align: center;
+            margin-bottom: 25px;
+            text-shadow: 0 0 20px rgba(255, 68, 68, 0.9);
+        }
+
+        .game-center {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px;
+            justify-content: center;
+        }
+
+        .game-container {
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.7);
+            border: 3px solid #8b0000;
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.9);
+            color: #ff4444;
+        }
+
+        .quote {
+            color: #999;
+            font-style: italic;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .save-load-controls {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 25px 0;
+        }
+
+        .save-btn, .load-btn {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #8b0000, #ff0000);
+            border: 3px solid #ff4444;
+            border-radius: 12px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .save-btn:hover, .load-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 0, 0, 0.6);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .stat {
+            background: rgba(139, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #8b0000;
+            box-shadow: 0 8px 25px rgba(139, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .stat:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(139, 0, 0, 0.6);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff4444;
+            text-shadow: 0 0 15px rgba(255, 68, 68, 0.7);
+        }
+
+        .target-section {
+            background: rgba(139, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #8b0000;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(139, 0, 0, 0.4);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .click-section {
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.7);
+            border: 3px solid #8b0000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .click-button {
+            width: 300px;
+            height: 300px;
+            border: 5px solid #8b0000;
+            border-radius: 30px;
+            background: linear-gradient(45deg, #2a0000, #4a0000, #2a0000);
+            font-size: 7rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 20px 50px rgba(139, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .click-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 25px 60px rgba(139, 0, 0, 0.9);
+            border-color: #ff0000;
+        }
+
+        .click-button:active {
+            transform: scale(0.9);
+        }
+
+        .critical-hit {
+            border-color: #ffff00 !important;
+            box-shadow: 0 0 60px rgba(255, 255, 0, 1) !important;
+            animation: criticalPulse 0.8s ease;
+        }
+
+        @keyframes criticalPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .notifications-container {
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .achievements-panel {
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.7);
+            border: 3px solid #8b0000;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .achievements-title {
+            font-size: 1.8rem;
+            color: #ff4444;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 68, 68, 0.7);
+        }
+
+        .boss-alerts-panel {
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.7);
+            border: 3px solid #8b0000;
+            min-height: 300px;
+        }
+
+        .boss-alerts-title {
+            font-size: 1.8rem;
+            color: #ff4444;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 68, 68, 0.7);
+        }
+
+        .upgrades {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .upgrade {
+            background: rgba(139, 0, 0, 0.3);
+            padding: 18px;
+            border-radius: 12px;
+            border: 3px solid #8b0000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upgrade:hover {
+            border-color: #ff0000;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 0, 0, 0.6);
+            background: rgba(139, 0, 0, 0.5);
+        }
+
+        .upgrade.affordable {
+            border-color: #ff4444;
+            background: rgba(255, 68, 68, 0.4);
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.4);
+        }
+
+        .upgrade.unaffordable {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .upgrade-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #ff4444;
+            text-shadow: 0 0 10px rgba(255, 68, 68, 0.7);
+        }
+
+        .upgrade-description {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin: 8px 0;
+            font-style: italic;
+        }
+
+        .upgrade-cost {
+            color: #ffaa44;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(255, 170, 68, 0.7);
+            margin-top: 8px;
+            font-size: 1rem;
+        }
+
+        .achievement {
+            background: linear-gradient(45deg, #8b0000, #ff0000, #8b0000);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 10px 0;
+            animation: achievementSlide 1s ease;
+            border: 3px solid #ff4444;
+            box-shadow: 0 0 25px rgba(255, 68, 68, 0.7);
+            text-shadow: 0 0 8px rgba(0, 0, 0, 1);
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        @keyframes achievementSlide {
+            0% { 
+                transform: translateX(100%) scale(0.8); 
+                opacity: 0; 
+            }
+            100% { 
+                transform: translateX(0%) scale(1); 
+                opacity: 1; 
+            }
+        }
+
+        .boss-encounter-alert {
+            background: linear-gradient(45deg, #8b0000, #ff0000, #8b0000);
+            border: 4px solid #ff4444;
+            border-radius: 18px;
+            padding: 25px;
+            margin: 15px 0;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(255, 0, 0, 1);
+            animation: alertPulse 2s ease infinite;
+        }
+
+        @keyframes alertPulse {
+            0%, 100% { 
+                transform: scale(1); 
+                box-shadow: 0 0 40px rgba(255, 0, 0, 1); 
+            }
+            50% { 
+                transform: scale(1.05); 
+                box-shadow: 0 0 60px rgba(255, 0, 0, 1.3); 
+            }
+        }
+
+        .boss-name {
+            font-size: 1.8rem;
+            color: #ffff00;
+            text-shadow: 0 0 20px rgba(255, 255, 0, 1);
+            margin-bottom: 15px;
+        }
+
+        .boss-alert-btn {
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #ff0000, #ff4444);
+            border: 3px solid #ffff00;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin: 0 8px;
+        }
+
+        .boss-alert-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 255, 0, 0.6);
+        }
+
+        .hard-victim-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, #8b0000, #ff0000, #8b0000);
+            border: 5px solid #ff4444;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(255, 0, 0, 1.5);
+            z-index: 5000;
+            animation: hardVictimPulse 1.5s ease infinite;
+            min-width: 400px;
+        }
+
+        @keyframes hardVictimPulse {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1); 
+                box-shadow: 0 0 60px rgba(255, 0, 0, 1.5); 
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.1); 
+                box-shadow: 0 0 100px rgba(255, 0, 0, 2); 
+            }
+        }
+
+        .hard-victim-name {
+            font-size: 2.5rem;
+            color: #ffff00;
+            text-shadow: 0 0 30px rgba(255, 255, 0, 1.5);
+            margin-bottom: 20px;
+            animation: nameFlicker 0.8s ease infinite;
+        }
+
+        @keyframes nameFlicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .spam-button {
+            padding: 20px 40px;
+            background: linear-gradient(45deg, #ff0000, #ff4444, #ff6666);
+            border: 4px solid #ffff00;
+            border-radius: 15px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(255, 255, 0, 0.8);
+        }
+
+        .spam-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 255, 0, 1);
+        }
+
+        .spam-button:active {
+            transform: scale(0.95);
+        }
+
+        .boss-arena {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0000 50%, #2a0000 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .boss-arena.active {
+            display: flex;
+        }
+
+        .boss-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 800px;
+            margin-bottom: 30px;
+        }
+
+        .character-sprite {
+            width: 180px;
+            height: 240px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            border: 4px solid #8b0000;
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.7);
+            position: relative;
+            animation: spriteFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes spriteFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .dexter-sprite {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 240"><rect width="180" height="60" fill="%23ffdbbc"/><rect y="60" width="180" height="20" fill="%238B4513"/><rect y="80" width="180" height="80" fill="%230044aa"/><rect y="160" width="180" height="40" fill="%23333"/><rect y="200" width="180" height="40" fill="%23000"/><circle cx="50" cy="30" r="8" fill="%23000"/><circle cx="130" cy="30" r="8" fill="%23000"/><rect x="70" y="40" width="40" height="8" fill="%23000"/><text x="90" y="95" text-anchor="middle" fill="white" font-size="12" font-family="Arial">DEXTER</text><polygon points="150,120 170,140 150,160" fill="%23silver"/></svg>');
+        }
+
+        .trinity-sprite {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 240"><rect width="180" height="60" fill="%23ffdbbc"/><rect y="60" width="180" height="20" fill="%23AAA"/><rect y="80" width="180" height="80" fill="%234488ff"/><rect y="160" width="180" height="40" fill="%23222"/><rect y="200" width="180" height="40" fill="%23000"/><circle cx="50" cy="30" r="8" fill="%23000"/><circle cx="130" cy="30" r="8" fill="%23000"/><rect x="70" y="40" width="40" height="8" fill="%23000"/><rect x="60" y="15" width="60" height="10" fill="%23AAA"/><text x="90" y="95" text-anchor="middle" fill="white" font-size="10" font-family="Arial">TRINITY</text><rect x="140" y="110" width="25" height="40" fill="%23654321"/></svg>');
+        }
+
+        .ice-truck-sprite {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 240"><rect width="180" height="60" fill="%23ffdbbc"/><rect y="60" width="180" height="20" fill="%23444"/><rect y="80" width="180" height="80" fill="%23000"/><rect y="160" width="180" height="40" fill="%23222"/><rect y="200" width="180" height="40" fill="%23000"/><circle cx="50" cy="30" r="8" fill="%23000"/><circle cx="130" cy="30" r="8" fill="%23000"/><rect x="70" y="40" width="40" height="8" fill="%23000"/><text x="90" y="95" text-anchor="middle" fill="white" font-size="10" font-family="Arial">ICE TRUCK</text><rect x="140" y="110" width="20" height="30" fill="%2387CEEB"/></svg>');
+        }
+
+        .travis-sprite {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 240"><rect width="180" height="60" fill="%23ffdbbc"/><rect y="60" width="180" height="20" fill="%23654321"/><rect y="80" width="180" height="80" fill="%23800080"/><rect y="160" width="180" height="40" fill="%23333"/><rect y="200" width="180" height="40" fill="%23000"/><circle cx="50" cy="30" r="8" fill="%23000"/><circle cx="130" cy="30" r="8" fill="%23000"/><rect x="70" y="40" width="40" height="8" fill="%23000"/><rect x="70" y="10" width="40" height="15" fill="%23654321"/><text x="90" y="95" text-anchor="middle" fill="white" font-size="10" font-family="Arial">TRAVIS</text><circle cx="150" cy="120" r="15" fill="%23FFD700"/></svg>');
+        }
+
+        .lila-sprite {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 240"><rect width="180" height="60" fill="%23ffdbbc"/><rect y="60" width="180" height="20" fill="%23FF69B4"/><rect y="80" width="180" height="80" fill="%23880088"/><rect y="160" width="180" height="40" fill="%23440044"/><rect y="200" width="180" height="40" fill="%23000"/><circle cx="50" cy="30" r="8" fill="%23000"/><circle cx="130" cy="30" r="8" fill="%23000"/><rect x="70" y="40" width="40" height="8" fill="%23000"/><rect x="60" y="10" width="60" height="20" fill="%23FF69B4"/><text x="90" y="95" text-anchor="middle" fill="white" font-size="12" font-family="Arial">LILA</text><polygon points="140,110 160,130 140,150" fill="%23FF4500"/></svg>');
+        }
+
+        .boss-health-bar {
+            width: 80%;
+            max-width: 500px;
+            height: 30px;
+            background: rgba(139, 0, 0, 0.3);
+            border: 3px solid #8b0000;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .boss-health {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ff4444);
+            width: 100%;
+            transition: width 0.5s ease;
+            border-radius: 12px;
+        }
+
+        .undertale-arena {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000000 0%, #1a0000 50%, #2a0000 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+        }
+
+        .undertale-arena.active {
+            display: flex;
+        }
+
+        .battle-box {
+            width: 600px;
+            height: 400px;
+            border: 5px solid #ffffff;
+            background: rgba(0, 0, 0, 0.9);
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .player-soul {
+            width: 20px;
+            height: 20px;
+            background: #ff0000;
+            position: absolute;
+            bottom: 50px;
+            left: 290px;
+            border-radius: 50%;
+            transition: all 0.1s ease;
+            box-shadow: 0 0 20px #ff0000;
+        }
+
+        .attack-projectile {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffffff;
+        }
+
+        .bone-attack {
+            background: #ffffff;
+            width: 8px;
+            height: 40px;
+            border-radius: 4px;
+        }
+
+        .fire-attack {
+            background: #ff4500;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #ff4500;
+        }
+
+        .ice-attack {
+            background: #87ceeb;
+            width: 15px;
+            height: 30px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            box-shadow: 0 0 10px #87ceeb;
+        }
+
+        .undertale-actions {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .undertale-btn {
+            padding: 15px 25px;
+            background: linear-gradient(45deg, #8b0000, #ff0000);
+            border: 3px solid #ff4444;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .undertale-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
+        }
+
+        .boss-dialogue {
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #8b0000;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            max-width: 500px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #ff4444;
+        }
+
+        .critical-number {
+            color: #ffff00 !important;
+            font-size: 2.5rem !important;
+            text-shadow: 0 0 25px rgba(255, 255, 0, 1) !important;
+            animation: criticalFloat 2s ease-out forwards !important;
+        }
+
+        @keyframes criticalFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-80px) scale(1.5);
+            }
+        }
+
+        .floating-number {
+            position: absolute;
+            color: #ff4444;
+            font-weight: bold;
+            font-size: 2rem;
+            pointer-events: none;
+            animation: normalFloat 2s ease-out forwards;
+            text-shadow: 0 0 15px rgba(255, 68, 68, 1);
+            font-family: 'Courier New', monospace;
+            z-index: 1000;
+        }
+
+        @keyframes normalFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-60px) scale(1.2);
+            }
+        }
+
+        .screen-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 0, 0, 0.15);
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0;
+            animation: flash 0.3s ease;
+        }
+
+        @keyframes flash {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .critical-flash {
+            background: rgba(255, 255, 0, 0.3) !important;
+            animation: criticalFlash 0.6s ease !important;
+        }
+
+        @keyframes criticalFlash {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 1200px) {
+            .game-layout {
+                flex-direction: column;
+            }
+            
+            .shop-container, .notifications-container {
+                width: 100%;
+                max-height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .click-button {
+                width: 250px;
+                height: 250px;
+                font-size: 5rem;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">🔪 DEXTER'S LAB 🔪</div>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+        <div class="loading-tip" id="loadingTip">Preparing your kill room...</div>
+    </div>
+
+    <div class="autosave-indicator" id="autosaveIndicator">
+        💾 Game Auto-Saved Successfully
+    </div>
+
+    <div class="health-container">
+        <div class="health-bar">
+            <div class="health-fill" id="healthFill"></div>
+        </div>
+        <div class="health-text" id="healthText">Health: 100/100</div>
+    </div>
+
+    <div class="undertale-arena" id="undertaleArena">
+        <div class="character-sprite" id="battleBossSprite"></div>
+        <div class="battle-box" id="battleBox">
+            <div class="player-soul" id="playerSoul"></div>
+        </div>
+        <div class="boss-dialogue" id="battleDialogue">
+            Prepare yourself for the ultimate confrontation...
+        </div>
+        <div class="undertale-actions">
+            <button class="undertale-btn" onclick="dodgeAttack()">🏃 DODGE</button>
+            <button class="undertale-btn" onclick="counterAttack()">⚔️ COUNTER</button>
+            <button class="undertale-btn" onclick="analyzePattern()">🔍 ANALYZE</button>
+            <button class="undertale-btn" onclick="escapeUndertale()">🚪 ESCAPE</button>
+        </div>
+    </div>
+
+    <div class="boss-arena" id="bossArena">
+        <div class="boss-container">
+            <div class="character-sprite dexter-sprite" id="dexterSprite"></div>
+            <div class="character-sprite" id="bossSprite"></div>
+        </div>
+        
+        <div class="boss-health-bar">
+            <div class="boss-health" id="bossHealth"></div>
+        </div>
+        
+        <div class="boss-dialogue" id="bossDialogue">
+            A dangerous killer approaches in the shadows...
+        </div>
+        
+        <div class="boss-actions">
+            <button class="boss-action-btn" onclick="bossAttack('stab')">🔪 DEADLY STAB</button>
+            <button class="boss-action-btn" onclick="bossAttack('slice')">🗡️ PRECISE SLICE</button>
+            <button class="boss-action-btn" onclick="bossAttack('follow')">👁️ TRACK & FOLLOW</button>
+            <button class="boss-action-btn" onclick="bossAttack('analyze')">🧬 ANALYZE WEAKNESS</button>
+            <button class="boss-action-btn" onclick="startUndertaleMode()">💀 UNDERTALE MODE</button>
+            <button class="boss-action-btn" onclick="escapeBoss()">🏃 TACTICAL RETREAT</button>
+        </div>
+    </div>
+
+    <div class="game-layout">
+        <div class="shop-container">
+            <div class="shop-title">🛒 SLY'S SHOP 🛒</div>
+            <div class="upgrades">
+                <div class="upgrade" id="upgrade1">
+                    <div class="upgrade-name">🔪 Razor's Edge</div>
+                    <div class="upgrade-description">Sharper than a serpent's fang</div>
+                    <div>+1 kill per click</div>
+                    <div class="upgrade-cost">Cost: <span id="cost1">10</span> victims</div>
+                </div>
+                
+                <div class="upgrade" id="upgrade2">
+                    <div class="upgrade-name">🗡️ Blood Harvester</div>
+                    <div class="upgrade-description">Reaps souls with surgical precision</div>
+                    <div>+5 kills per click</div>
+                    <div class="upgrade-cost">Cost: <span id="cost2">100</span> victims</div>
+                </div>
+                
+                <div class="upgrade" id="upgrade3">
+                    <div class="upgrade-name">💀 Soul Magnet</div>
+                    <div class="upgrade-description">Attracts death automatically</div>
+                    <div>+1 kill per second</div>
+                    <div class="upgrade-cost">Cost: <span id="cost3">50</span> victims</div>
+                </div>
+                
+                <div class="upgrade" id="upgrade4">
+                    <div class="upgrade-name">🏢 Death Factory</div>
+                    <div class="upgrade-description">Mass production of demise</div>
+                    <div>+10 kills per second</div>
+                    <div class="upgrade-cost">Cost: <span id="cost4">500</span> victims</div>
+                </div>
+                
+                <div class="upgrade" id="upgrade5">
+                    <div class="upgrade-name">⚡ Lightning Execution</div>
+                    <div class="upgrade-description">Strike faster than thought</div>
+                    <div>+25 kills per click</div>
+                    <div class="upgrade-cost">Cost: <span id="cost5">2000</span> victims</div>
+                </div>
+                
+                <div class="upgrade" id="upgrade6">
+                    <div class="upgrade-name">🌃 Night Reaper</div>
+                    <div class="upgrade-description">Death walks in eternal darkness</div>
+                    <div>+50 kills per second</div>
+                    <div class="upgrade-cost">Cost: <span id="cost6">5000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade7">
+                    <div class="upgrade-name">🧬 DNA Destroyer</div>
+                    <div class="upgrade-description">Unravels life at its core</div>
+                    <div>+100 kills per click</div>
+                    <div class="upgrade-cost">Cost: <span id="cost7">10000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade8">
+                    <div class="upgrade-name">🚢 Crimson Harbor</div>
+                    <div class="upgrade-description">Where bodies find eternal rest</div>
+                    <div>+200 kills per second</div>
+                    <div class="upgrade-cost">Cost: <span id="cost8">25000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade9">
+                    <div class="upgrade-name">👥 Trinity Protocol</div>
+                    <div class="upgrade-description">Master the art of three</div>
+                    <div>+500 kills per click</div>
+                    <div class="upgrade-cost">Cost: <span id="cost9">50000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade10">
+                    <div class="upgrade-name">🩸 Blood Archive</div>
+                    <div class="upgrade-description">Memories preserved in crimson</div>
+                    <div>+1000 kills per second</div>
+                    <div class="upgrade-cost">Cost: <span id="cost10">100000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade11">
+                    <div class="upgrade-name">🌊 Tidal Massacre</div>
+                    <div class="upgrade-description">Waves of endless destruction</div>
+                    <div>+2500 kills per click</div>
+                    <div class="upgrade-cost">Cost: <span id="cost11">250000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade12">
+                    <div class="upgrade-name">🎭 Code Eternal</div>
+                    <div class="upgrade-description">Harry's legacy lives forever</div>
+                    <div>+5000 kills per second</div>
+                    <div class="upgrade-cost">Cost: <span id="cost12">500000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade13">
+                    <div class="upgrade-name">🏥 Metro Morgue</div>
+                    <div class="upgrade-description">Inside access to infinite victims</div>
+                    <div>+10000 kills per click</div>
+                    <div class="upgrade-cost">Cost: <span id="cost13">1000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade14">
+                    <div class="upgrade-name">🔥 Infernal Judge</div>
+                    <div class="upgrade-description">Divine judgment through flames</div>
+                    <div>+25000 kills per second</div>
+                    <div class="upgrade-cost">Cost: <span id="cost14">2500000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade15">
+                    <div class="upgrade-name">👁️ Omniscient Watcher</div>
+                    <div class="upgrade-description">See all, judge all, end all</div>
+                    <div>+50000 kills per click</div>
+                    <div class="upgrade-cost">Cost: <span id="cost15">5000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade16">
+                    <div class="upgrade-name">🌪️ Chaos Incarnate</div>
+                    <div class="upgrade-description">Pure destruction unleashed</div>
+                    <div>+100000 kills per second</div>
+                    <div class="upgrade-cost">Cost: <span id="cost16">10000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade17">
+                    <div class="upgrade-name">🌋 Volcanic Wrath</div>
+                    <div class="upgrade-description">Earth's fury in your hands</div>
+                    <div>+250000 kills per click</div>
+                    <div class="upgrade-cost">Cost: <span id="cost17">25000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade18">
+                    <div class="upgrade-name">🌌 Cosmic Annihilator</div>
+                    <div class="upgrade-description">Death that transcends dimensions</div>
+                    <div>+500000 kills per second</div>
+                    <div class="upgrade-cost">Cost: <span id="cost18">50000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade19">
+                    <div class="upgrade-name">⚫ Void Devourer</div>
+                    <div class="upgrade-description">Consume reality itself</div>
+                    <div>+1000000 kills per click</div>
+                    <div class="upgrade-cost">Cost: <span id="cost19">100000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade20">
+                    <div class="upgrade-name">🌟 Universal Ending</div>
+                    <div class="upgrade-description">The final solution to existence</div>
+                    <div>+10000000 kills per second</div>
+                    <div class="upgrade-cost">Cost: <span id="cost20">1000000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade21">
+                    <div class="upgrade-name">💫 Reality Shredder</div>
+                    <div class="upgrade-description">Tear through the fabric of being</div>
+                    <div>+50000000 kills per click</div>
+                    <div class="upgrade-cost">Cost: <span id="cost21">5000000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade22">
+                    <div class="upgrade-name">🕳️ Dimensional Ripper</div>
+                    <div class="upgrade-description">Break the barriers between worlds</div>
+                    <div>+100000000 kills per second</div>
+                    <div class="upgrade-cost">Cost: <span id="cost22">10000000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade23">
+                    <div class="upgrade-name">🔮 Fate Manipulator</div>
+                    <div class="upgrade-description">Control destiny itself</div>
+                    <div>+500000000 kills per click</div>
+                    <div class="upgrade-cost">Cost: <span id="cost23">50000000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade24">
+                    <div class="upgrade-name">⚡ God Slayer</div>
+                    <div class="upgrade-description">Even deities fear your blade</div>
+                    <div>+1000000000 kills per second</div>
+                    <div class="upgrade-cost">Cost: <span id="cost24">100000000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade25">
+                    <div class="upgrade-name">🎆 Big Bang Reverser</div>
+                    <div class="upgrade-description">Undo creation with a single click</div>
+                    <div>+∞ kills per click</div>
+                    <div class="upgrade-cost">Cost: <span id="cost25">1000000000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade26">
+                    <div class="upgrade-name">🏆 Death Incarnate</div>
+                    <div class="upgrade-description">Become the embodiment of death</div>
+                    <div>+10% critical chance</div>
+                    <div class="upgrade-cost">Cost: <span id="cost26">500000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade27">
+                    <div class="upgrade-name">💰 Blood Money</div>
+                    <div class="upgrade-description">Profit from every kill</div>
+                    <div>+2x victim rewards</div>
+                    <div class="upgrade-cost">Cost: <span id="cost27">1000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade28">
+                    <div class="upgrade-name">🎯 Perfect Aim</div>
+                    <div class="upgrade-description">Never miss your target</div>
+                    <div>+15% critical chance</div>
+                    <div class="upgrade-cost">Cost: <span id="cost28">2000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade29">
+                    <div class="upgrade-name">🧪 Toxic Blood</div>
+                    <div class="upgrade-description">Your victims spread death</div>
+                    <div>+3x auto kills</div>
+                    <div class="upgrade-cost">Cost: <span id="cost29">5000000</span> victims</div>
+                </div>
+
+                <div class="upgrade" id="upgrade30">
+                    <div class="upgrade-name">👑 King of Killers</div>
+                    <div class="upgrade-description">Rule over all serial killers</div>
+                    <div>+5x all production</div>
+                    <div class="upgrade-cost">Cost: <span id="cost30">10000000</span> victims</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-center">
+            <div class="game-container">
+                <h1 class="title">🔪 DEXTER'S LAB 🔪</h1>
+                <div class="quote">
+                    "Tonight's the night... and it's going to happen again and again."
+                </div>
+                
+                <div class="save-load-controls">
+                    <button class="save-btn" onclick="saveGame()">💾 SAVE GAME</button>
+                    <button class="load-btn" onclick="loadGame()">📁 LOAD GAME</button>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <div>Victims</div>
+                        <div class="stat-value" id="score">0</div>
+                    </div>
+                    <div class="stat">
+                        <div>Kill Power</div>
+                        <div class="stat-value" id="clickPower">1</div>
+                    </div>
+                    <div class="stat">
+                        <div>Per Second</div>
+                        <div class="stat-value" id="autoKills">0</div>
+                    </div>
+                    <div class="stat">
+                        <div>Critical %</div>
+                        <div class="stat-value" id="critChance">5</div>
+                    </div>
+                    <div class="stat">
+                        <div>Boss Kills</div>
+                        <div class="stat-value" id="bossKills">0</div>
+                    </div>
+                    <div class="stat">
+                        <div>Body Parts</div>
+                        <div class="stat-value" id="bodyParts">0</div>
+                    </div>
+                </div>
+
+                <div class="target-section">
+                    <div>🎯 Current Target: <span id="currentVictim">John Doe</span></div>
+                    <div>🌙 Darkness Level: <span id="darknessLevel">1</span></div>
+                </div>
+            </div>
+
+            <div class="click-section">
+                <button class="click-button" id="clickButton">🔪</button>
+            </div>
+        </div>
+
+        <div class="notifications-container">
+            <div class="achievements-panel">
+                <div class="achievements-title">🏆 ACHIEVEMENTS</div>
+                <div id="achievements"></div>
+            </div>
+
+            <div class="boss-alerts-panel">
+                <div class="boss-alerts-title">⚠️ BOSS ALERTS</div>
+                <div id="bossAlerts"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            score: 0,
+            clickPower: 1,
+            autoKills: 0,
+            bodyParts: 0,
+            criticalChance: 5,
+            bossKills: 0,
+            darknessLevel: 1,
+            totalKills: 0,
+            lastBossEncounter: 0,
+            lastHardVictim: 0,
+            health: 100,
+            maxHealth: 100,
+            upgrades: {}
+        };
+
+        for (let i = 1; i <= 30; i++) {
+            const baseCosts = [10, 100, 50, 500, 2000, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000, 2500000, 5000000, 10000000, 25000000, 50000000, 100000000, 1000000000, 5000000000, 10000000000, 50000000000, 100000000000, 1000000000000, 500000, 1000000, 2000000, 5000000, 10000000];
+            gameState.upgrades[`upgrade${i}`] = { 
+                cost: baseCosts[i-1] || Math.pow(10, i), 
+                owned: 0, 
+                baseCost: baseCosts[i-1] || Math.pow(10, i) 
+            };
+        }
+
+        let recentAchievements = [];
+        const maxAchievements = 3;
+        let currentHardVictim = null;
+        let hardVictimInterval = null;
+        let undertaleMode = false;
+        let playerSoulPos = { x: 290, y: 350 };
+        let undertaleAttacks = [];
+        let undertaleHealth = 100;
+
+        const bosses = {
+            trinity: {
+                name: "Trinity Killer",
+                health: 1000,
+                maxHealth: 1000,
+                sprite: "trinity-sprite",
+                dialogue: [
+                    "I am the Alpha and Omega, the beginning and the end...",
+                    "Your dark passenger is nothing compared to my divine mission...",
+                    "Four walls make the perfect tomb for your soul...",
+                    "I have been killing longer than you've existed...",
+                    "The cycle of death must continue through me..."
+                ],
+                rewards: { score: 30000, clickPower: 500, critChance: 2 },
+                attackPattern: 'trinity'
+            },
+            iceTruck: {
+                name: "Ice Truck Killer",
+                health: 800,
+                maxHealth: 800,
+                sprite: "ice-truck-sprite",
+                dialogue: [
+                    "Hello, Dexter Morgan, my dear brother...",
+                    "We're connected by blood and darkness...",
+                    "I left you gifts to remember me by...",
+                    "The ice preserves their beauty forever...",
+                    "You cannot escape your true nature..."
+                ],
+                rewards: { score: 20000, clickPower: 300, critChance: 1.5 },
+                attackPattern: 'ice'
+            },
+            travis: {
+                name: "Travis Marshall",
+                health: 900,
+                maxHealth: 900,
+                sprite: "travis-sprite",
+                dialogue: [
+                    "The apocalypse is coming through me...",
+                    "I am the vessel of divine retribution...",
+                    "You cannot stop the end of days...",
+                    "My angels will guide me to victory...",
+                    "Religious fervor fuels my blade..."
+                ],
+                rewards: { score: 25000, clickPower: 400, critChance: 1.8 },
+                attackPattern: 'fire'
+            },
+            lila: {
+                name: "Lila West",
+                health: 600,
+                maxHealth: 600,
+                sprite: "lila-sprite",
+                dialogue: [
+                    "I know exactly who you really are, Dexter...",
+                    "We're the same, you and me, creatures of darkness...",
+                    "Let me help you embrace your true self...",
+                    "Fire cleanses everything, including your lies...",
+                    "You can't run from what you truly are..."
+                ],
+                rewards: { score: 15000, clickPower: 200, critChance: 1 },
+                attackPattern: 'fire'
+            }
+        };
+
+        let currentBoss = null;
+
+        const achievements = [
+            { id: 'firstKill', name: 'First Blood 🔪', condition: (state) => state.score >= 1, unlocked: false },
+            { id: 'criticalMaster', name: 'Critical Master ⚡', condition: (state) => state.criticalChance >= 30, unlocked: false },
+            { id: 'serialKiller', name: 'Serial Killer 💀', condition: (state) => state.score >= 10, unlocked: false },
+            { id: 'massMurderer', name: 'Mass Murderer 🩸', condition: (state) => state.score >= 100, unlocked: false },
+            { id: 'bossHunter', name: 'Boss Hunter 👹', condition: (state) => state.bossKills >= 1, unlocked: false },
+            { id: 'thousandKills', name: 'Thousand Souls 💀', condition: (state) => state.score >= 1000, unlocked: false },
+            { id: 'darkLord', name: 'Dark Lord 🌑', condition: (state) => state.darknessLevel >= 10, unlocked: false },
+            { id: 'bodyCollector', name: 'Body Collector 🫀', condition: (state) => state.bodyParts >= 1000, unlocked: false },
+            { id: 'bossSlayer', name: 'Boss Slayer 👑', condition: (state) => state.bossKills >= 5, unlocked: false },
+            { id: 'millionaire', name: 'Million Killer 💰', condition: (state) => state.score >= 1000000, unlocked: false },
+            { id: 'survivor', name: 'Survivor 💚', condition: (state) => state.health >= 80, unlocked: false },
+            { id: 'nearDeath', name: 'Near Death 💀', condition: (state) => state.health <= 10, unlocked: false },
+            { id: 'undertaleVeteran', name: 'Undertale Veteran 💀', condition: (state) => state.bossKills >= 3, unlocked: false }
+        ];
+
+        const victimNames = [
+            "Arthur Mitchell", "Miguel Prado", "James Doakes", "Trinity Killer",
+            "Hannah McKay", "Jordan Chase", "Travis Marshall", "Ice Truck Killer",
+            "Oliver Saxon", "Kurt Caldwell", "Lila West", "Brian Moser",
+            "Boyd Fowler", "Jeremy Downs", "Neil Perry", "Carlos Guerrero"
+        ];
+
+        const hardVictimNames = [
+            "ARTHUR MITCHELL", "MIGUEL PRADO", "JORDAN CHASE", "TRAVIS MARSHALL",
+            "OLIVER SAXON", "KURT CALDWELL", "BOYD FOWLER", "EUGENE GREER"
+        ];
+
+        const loadingTips = [
+            "Tip: Click faster for more kills!",
+            "Tip: Buy upgrades to increase your power!",
+            "Tip: Critical hits deal massive damage!",
+            "Tip: Boss fights give huge rewards!",
+            "Tip: Don't let hard victims escape!",
+            "Tip: Keep your health above 0 to survive!",
+            "Tip: Darkness level increases with kills!",
+            "Tip: Try Undertale mode for extra challenge!",
+            "Tip: Auto-save happens every 15 seconds!"
+        ];
+
+        const scoreElement = document.getElementById('score');
+        const clickPowerElement = document.getElementById('clickPower');
+        const autoKillsElement = document.getElementById('autoKills');
+        const critChanceElement = document.getElementById('critChance');
+        const bossKillsElement = document.getElementById('bossKills');
+        const bodyPartsElement = document.getElementById('bodyParts');
+        const currentVictimElement = document.getElementById('currentVictim');
+        const darknessLevelElement = document.getElementById('darknessLevel');
+        const clickButton = document.getElementById('clickButton');
+        const achievementsElement = document.getElementById('achievements');
+        const bossAlertsElement = document.getElementById('bossAlerts');
+        const autosaveIndicator = document.getElementById('autosaveIndicator');
+        const healthFill = document.getElementById('healthFill');
+        const healthText = document.getElementById('healthText');
+
+        function showLoadingScreen() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const loadingProgress = document.getElementById('loadingProgress');
+            const loadingTip = document.getElementById('loadingTip');
+            
+            let progress = 0;
+            let tipIndex = 0;
+            
+            const loadingInterval = setInterval(() => {
+                progress += Math.random() * 15 + 5;
+                if (progress > 100) progress = 100;
+                
+                loadingProgress.style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(loadingInterval);
+                    setTimeout(() => {
+                        loadingScreen.classList.add('hidden');
+                    }, 500);
+                }
+            }, 200);
+            
+            const tipInterval = setInterval(() => {
+                loadingTip.textContent = loadingTips[tipIndex];
+                tipIndex = (tipIndex + 1) % loadingTips.length;
+                
+                if (progress >= 100) {
+                    clearInterval(tipInterval);
+                }
+            }, 1000);
+        }
+
+        function showAutosaveIndicator() {
+            autosaveIndicator.classList.add('show');
+            setTimeout(() => {
+                autosaveIndicator.classList.remove('show');
+            }, 2000);
+        }
+
+        function updateHealthDisplay() {
+            const healthPercent = (gameState.health / gameState.maxHealth) * 100;
+            healthFill.style.width = healthPercent + '%';
+            healthText.textContent = `Health: ${Math.floor(gameState.health)}/${gameState.maxHealth}`;
+            
+            if (gameState.health <= 0) {
+                gameState.health = 0;
+                showAchievement('💀 YOU DIED! Game will reset in 5 seconds...');
+                setTimeout(() => {
+                    resetGame();
+                }, 5000);
+            }
+        }
+
+        function resetGame() {
+            gameState = {
+                score: 0,
+                clickPower: 1,
+                autoKills: 0,
+                bodyParts: 0,
+                criticalChance: 5,
+                bossKills: 0,
+                darknessLevel: 1,
+                totalKills: 0,
+                lastBossEncounter: 0,
+                lastHardVictim: 0,
+                health: 100,
+                maxHealth: 100,
+                upgrades: {}
+            };
+            
+            for (let i = 1; i <= 30; i++) {
+                const baseCosts = [10, 100, 50, 500, 2000, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000, 2500000, 5000000, 10000000, 25000000, 50000000, 100000000, 1000000000, 5000000000, 10000000000, 50000000000, 100000000000, 1000000000000, 500000, 1000000, 2000000, 5000000, 10000000];
+                gameState.upgrades[`upgrade${i}`] = { 
+                    cost: baseCosts[i-1] || Math.pow(10, i), 
+                    owned: 0, 
+                    baseCost: baseCosts[i-1] || Math.pow(10, i) 
+                };
+            }
+            
+            achievements.forEach(achievement => achievement.unlocked = false);
+            updateDisplay();
+            showAchievement('🔄 Game Reset! Start your killing spree again!');
+        }
+
+        function autoSave() {
+            localStorage.setItem('dexterUltimateSpritesGameState', JSON.stringify(gameState));
+            showAutosaveIndicator();
+        }
+
+        function isCriticalHit() {
+            return Math.random() * 100 < gameState.criticalChance;
+        }
+
+        function updateDisplay() {
+            scoreElement.textContent = formatNumber(Math.floor(gameState.score));
+            clickPowerElement.textContent = formatNumber(gameState.clickPower);
+            autoKillsElement.textContent = formatNumber(gameState.autoKills);
+            critChanceElement.textContent = Math.floor(gameState.criticalChance);
+            bossKillsElement.textContent = gameState.bossKills;
+            bodyPartsElement.textContent = formatNumber(Math.floor(gameState.bodyParts));
+            darknessLevelElement.textContent = gameState.darknessLevel;
+            updateHealthDisplay();
+
+            Object.keys(gameState.upgrades).forEach(upgradeId => {
+                const upgrade = document.getElementById(upgradeId);
+                if (upgrade) {
+                    const cost = gameState.upgrades[upgradeId].cost;
+                    
+                    if (gameState.score >= cost) {
+                        upgrade.classList.add('affordable');
+                        upgrade.classList.remove('unaffordable');
+                    } else {
+                        upgrade.classList.remove('affordable');
+                        upgrade.classList.add('unaffordable');
+                    }
+                }
+            });
+        }
+
+        function formatNumber(num) {
+            if (num < 1000) return num.toString();
+            if (num < 1000000) return (num / 1000).toFixed(1) + 'K';
+            if (num < 1000000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num < 1000000000000) return (num / 1000000000).toFixed(1) + 'B';
+            return (num / 1000000000000).toFixed(1) + 'T';
+        }
+
+        function checkBossEncounter() {
+            const currentTime = Date.now();
+            if (currentTime - gameState.lastBossEncounter > 15000) {
+                if (Math.random() < 0.03) {
+                    triggerBossEncounter();
+                    gameState.lastBossEncounter = currentTime;
+                }
+            }
+        }
+
+        function checkHardVictim() {
+            const currentTime = Date.now();
+            if (currentTime - gameState.lastHardVictim > 8000) {
+                if (Math.random() < 0.08) {
+                    triggerHardVictim();
+                    gameState.lastHardVictim = currentTime;
+                }
+            }
+        }
+
+        function triggerHardVictim() {
+            const hardVictimName = hardVictimNames[Math.floor(Math.random() * hardVictimNames.length)];
+            
+            const hardVictimDiv = document.createElement('div');
+            hardVictimDiv.className = 'hard-victim-alert';
+            hardVictimDiv.innerHTML = `
+                <div class="hard-victim-name">${hardVictimName}</div>
+                <div style="margin: 15px 0; color: #cccccc; font-size: 1.2rem;">HARD VICTIM DETECTED! SPAM TO CAPTURE!</div>
+                <button class="spam-button" onclick="spamVictim('${hardVictimName}', this.parentElement)">🔪 CAPTURE ${hardVictimName}!</button>
+            `;
+            
+            document.body.appendChild(hardVictimDiv);
+            
+            let spamCount = 0;
+            const requiredSpams = 15;
+            let healthDrain = setInterval(() => {
+                gameState.health -= 3;
+                updateHealthDisplay();
+                
+                if (gameState.health <= 0 || spamCount >= requiredSpams) {
+                    clearInterval(healthDrain);
+                    if (document.body.contains(hardVictimDiv)) {
+                        hardVictimDiv.remove();
+                    }
+                }
+            }, 500);
+            
+            setTimeout(() => {
+                clearInterval(healthDrain);
+                if (document.body.contains(hardVictimDiv)) {
+                    hardVictimDiv.remove();
+                    if (spamCount < requiredSpams) {
+                        showAchievement('💔 Hard victim escaped! Health penalty!');
+                        gameState.health -= 15;
+                        updateHealthDisplay();
+                    }
+                }
+            }, 8000);
+            
+            hardVictimDiv.spamCount = 0;
+            hardVictimDiv.requiredSpams = requiredSpams;
+            hardVictimDiv.healthDrain = healthDrain;
+        }
+
+        function spamVictim(victimName, alertDiv) {
+            if (!alertDiv.spamCount) alertDiv.spamCount = 0;
+            alertDiv.spamCount++;
+            
+            const spamButton = alertDiv.querySelector('.spam-button');
+            spamButton.textContent = `🔪 CAPTURE! (${alertDiv.spamCount}/${alertDiv.requiredSpams})`;
+            
+            if (alertDiv.spamCount >= alertDiv.requiredSpams) {
+                clearInterval(alertDiv.healthDrain);
+                
+                const reward = gameState.clickPower * 50;
+                gameState.score += reward;
+                gameState.health = Math.min(gameState.maxHealth, gameState.health + 20);
+                
+                showAchievement(`💰 Captured ${victimName}! +${formatNumber(reward)} victims & +20 health!`);
+                
+                alertDiv.remove();
+                updateDisplay();
+            }
+        }
+
+        function triggerBossEncounter() {
+            const bossKeys = Object.keys(bosses);
+            const randomBoss = bossKeys[Math.floor(Math.random() * bossKeys.length)];
+            currentBoss = { ...bosses[randomBoss], key: randomBoss };
+            
+            showBossAlert();
+        }
+
+        function showBossAlert() {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'boss-encounter-alert';
+            alertDiv.innerHTML = `
+                <div class="boss-name">${currentBoss.name.toUpperCase()} DETECTED!</div>
+                <div style="margin: 12px 0; color: #cccccc; font-size: 1rem;">A legendary serial killer stalks the shadows!</div>
+                <button class="boss-alert-btn" onclick="acceptBossFight()">🩸 HUNT THEM DOWN</button>
+                <button class="boss-alert-btn" onclick="declineBossFight()">👻 IGNORE FOR NOW</button>
+            `;
+            
+            bossAlertsElement.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                if (bossAlertsElement.contains(alertDiv)) {
+                    alertDiv.remove();
+                    currentBoss = null;
+                }
+            }, 8000);
+        }
+
+        function acceptBossFight() {
+            const bossArena = document.getElementById('bossArena');
+            const bossSprite = document.getElementById('bossSprite');
+            const bossHealth = document.getElementById('bossHealth');
+            const bossDialogue = document.getElementById('bossDialogue');
+            
+            bossAlertsElement.innerHTML = '';
+            
+            bossArena.classList.add('active');
+            
+            bossSprite.className = `character-sprite ${currentBoss.sprite}`;
+            bossHealth.style.width = '100%';
+            bossDialogue.textContent = currentBoss.dialogue[0];
+        }
+
+        function declineBossFight() {
+            bossAlertsElement.innerHTML = '';
+            currentBoss = null;
+        }
+
+        function bossAttack(attackType) {
+            if (!currentBoss) return;
+            
+            let damage = 0;
+            const bossDialogue = document.getElementById('bossDialogue');
+            
+            switch (attackType) {
+                case 'stab':
+                    damage = gameState.clickPower * 2;
+                    bossDialogue.textContent = "Your blade pierces through their defenses!";
+                    break;
+                case 'slice':
+                    damage = gameState.clickPower * 1.5;
+                    bossDialogue.textContent = "A masterful slice across their weakness!";
+                    break;
+                case 'follow':
+                    damage = gameState.clickPower * 3;
+                    bossDialogue.textContent = "You tracked them to their fatal flaw!";
+                    break;
+                case 'analyze':
+                    damage = gameState.clickPower * 2.5;
+                    bossDialogue.textContent = "Analysis reveals their critical vulnerability!";
+                    break;
+            }
+            
+            currentBoss.health -= damage;
+            
+            const bossHealth = document.getElementById('bossHealth');
+            const healthPercent = Math.max(0, (currentBoss.health / currentBoss.maxHealth) * 100);
+            bossHealth.style.width = healthPercent + '%';
+            
+            if (currentBoss.health <= 0) {
+                defeatedBoss();
+            } else {
+                setTimeout(() => {
+                    const randomDialogue = currentBoss.dialogue[Math.floor(Math.random() * currentBoss.dialogue.length)];
+                    bossDialogue.textContent = randomDialogue;
+                }, 1500);
+            }
+        }
+
+        function startUndertaleMode() {
+            if (!currentBoss) return;
+            
+            undertaleMode = true;
+            undertaleHealth = 100;
+            playerSoulPos = { x: 290, y: 350 };
+            undertaleAttacks = [];
+            
+            const bossArena = document.getElementById('bossArena');
+            const undertaleArena = document.getElementById('undertaleArena');
+            const battleBossSprite = document.getElementById('battleBossSprite');
+            const battleDialogue = document.getElementById('battleDialogue');
+            
+            bossArena.classList.remove('active');
+            undertaleArena.classList.add('active');
+            
+            battleBossSprite.className = `character-sprite ${currentBoss.sprite}`;
+            battleDialogue.textContent = "You enter the realm of souls... Survive the onslaught!";
+            
+            startUndertaleAttacks();
+        }
+
+        function startUndertaleAttacks() {
+            if (!undertaleMode) return;
+            
+            setInterval(() => {
+                if (undertaleMode) {
+                    createUndertaleAttack();
+                }
+            }, 800);
+        }
+
+        function createUndertaleAttack() {
+            if (!currentBoss) return;
+            
+            const battleBox = document.getElementById('battleBox');
+            const attack = document.createElement('div');
+            
+            const attackTypes = {
+                trinity: 'bone-attack',
+                ice: 'ice-attack',
+                fire: 'fire-attack',
+                travis: 'fire-attack'
+            };
+            
+            attack.className = `attack-projectile ${attackTypes[currentBoss.attackPattern] || 'attack-projectile'}`;
+            
+            attack.style.left = Math.random() * 570 + 'px';
+            attack.style.top = '0px';
+            
+            battleBox.appendChild(attack);
+            undertaleAttacks.push(attack);
+            
+            const moveAttack = setInterval(() => {
+                if (!battleBox.contains(attack)) {
+                    clearInterval(moveAttack);
+                    return;
+                }
+                
+                const currentTop = parseInt(attack.style.top);
+                attack.style.top = (currentTop + 3) + 'px';
+                
+                if (currentTop > 400) {
+                    attack.remove();
+                    clearInterval(moveAttack);
+                    const index = undertaleAttacks.indexOf(attack);
+                    if (index > -1) undertaleAttacks.splice(index, 1);
+                }
+                
+                checkUndertaleCollision(attack);
+            }, 50);
+        }
+
+        function checkUndertaleCollision(attack) {
+            const playerSoul = document.getElementById('playerSoul');
+            const attackRect = attack.getBoundingClientRect();
+            const soulRect = playerSoul.getBoundingClientRect();
+            
+            if (attackRect.left < soulRect.right && 
+                attackRect.right > soulRect.left && 
+                attackRect.top < soulRect.bottom && 
+                attackRect.bottom > soulRect.top) {
+                
+                attack.remove();
+                const index = undertaleAttacks.indexOf(attack);
+                if (index > -1) undertaleAttacks.splice(index, 1);
+                
+                undertaleHealth -= 10;
+                gameState.health -= 5;
+                updateHealthDisplay();
+                
+                if (undertaleHealth <= 0 || gameState.health <= 0) {
+                    escapeUndertale();
+                    showAchievement('💀 You were overwhelmed in Undertale mode!');
+                }
+            }
+        }
+
+        function dodgeAttack() {
+            showAchievement('🏃 Perfect dodge! You gained invincibility frames!');
+            const playerSoul = document.getElementById('playerSoul');
+            playerSoul.style.opacity = '0.5';
+            setTimeout(() => {
+                playerSoul.style.opacity = '1';
+            }, 1000);
+        }
+
+        function counterAttack() {
+            if (!currentBoss) return;
+            
+            const damage = gameState.clickPower * 5;
+            currentBoss.health -= damage;
+            
+            showAchievement(`⚔️ Counter attack! ${formatNumber(damage)} damage dealt!`);
+            
+            if (currentBoss.health <= 0) {
+                escapeUndertale();
+                defeatedBoss();
+            }
+        }
+
+        function analyzePattern() {
+            undertaleAttacks.forEach(attack => {
+                attack.style.background = '#ffff00';
+                attack.style.boxShadow = '0 0 20px #ffff00';
+            });
+            
+            showAchievement('🔍 Attack patterns revealed! All attacks highlighted!');
+        }
+
+        function escapeUndertale() {
+            undertaleMode = false;
+            undertaleAttacks.forEach(attack => attack.remove());
+            undertaleAttacks = [];
+            
+            const undertaleArena = document.getElementById('undertaleArena');
+            const bossArena = document.getElementById('bossArena');
+            
+            undertaleArena.classList.remove('active');
+            bossArena.classList.add('active');
+            
+            showAchievement('🚪 Escaped from Undertale mode!');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (!undertaleMode) return;
+            
+            const playerSoul = document.getElementById('playerSoul');
+            const speed = 5;
+            
+            switch (e.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    playerSoulPos.y = Math.max(20, playerSoulPos.y - speed);
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    playerSoulPos.y = Math.min(370, playerSoulPos.y + speed);
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    playerSoulPos.x = Math.max(20, playerSoulPos.x - speed);
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    playerSoulPos.x = Math.min(570, playerSoulPos.x + speed);
+                    break;
+            }
+            
+            playerSoul.style.left = playerSoulPos.x + 'px';
+            playerSoul.style.bottom = (400 - playerSoulPos.y) + 'px';
+        });
+
+        function defeatedBoss() {
+            const bossArena = document.getElementById('bossArena');
+            
+            gameState.score += currentBoss.rewards.score;
+            gameState.clickPower += currentBoss.rewards.clickPower;
+            gameState.criticalChance += currentBoss.rewards.critChance;
+            gameState.bossKills++;
+            gameState.health = Math.min(gameState.maxHealth, gameState.health + 30);
+            
+            showAchievement(`Defeated ${currentBoss.name}! 👑 Massive power boost!`);
+            
+            bossArena.classList.remove('active');
+            currentBoss = null;
+            
+            updateDisplay();
+            checkAchievements();
+        }
+
+        function escapeBoss() {
+            const bossArena = document.getElementById('bossArena');
+            
+            bossArena.classList.remove('active');
+            currentBoss = null;
+            
+            showAchievement('You escaped into the shadows... this time. 🏃');
+        }
+
+        clickButton.addEventListener('click', (e) => {
+            const isCrit = isCriticalHit();
+            let kills = gameState.clickPower;
+            
+            if (isCrit) {
+                kills *= 3;
+                clickButton.classList.add('critical-hit');
+                setTimeout(() => clickButton.classList.remove('critical-hit'), 800);
+            }
+            
+            gameState.score += kills;
+            gameState.totalKills += kills;
+            gameState.bodyParts += kills * 0.2;
+            gameState.darknessLevel = Math.floor(gameState.totalKills / 100) + 1;
+            
+            if (gameState.criticalChance < 50) {
+                gameState.criticalChance += 0.01;
+            }
+            
+            createScreenFlash(isCrit);
+            createFloatingNumber(e, kills, isCrit);
+            
+            if (Math.random() < 0.6) {
+                currentVictimElement.textContent = victimNames[Math.floor(Math.random() * victimNames.length)];
+            }
+            
+            updateDisplay();
+            checkAchievements();
+        });
+
+        function createScreenFlash(isCritical = false) {
+            const flash = document.createElement('div');
+            flash.className = isCritical ? 'screen-flash critical-flash' : 'screen-flash';
+            document.body.appendChild(flash);
+            
+            setTimeout(() => {
+                if (document.body.contains(flash)) {
+                    document.body.removeChild(flash);
+                }
+            }, isCritical ? 600 : 300);
+        }
+
+        function createFloatingNumber(event, value, isCritical = false) {
+            const floatingNumber = document.createElement('div');
+            floatingNumber.className = isCritical ? 'floating-number critical-number' : 'floating-number';
+            floatingNumber.textContent = (isCritical ? 'CRIT! +' : '+') + formatNumber(value);
+            floatingNumber.style.left = (event.clientX + Math.random() * 100 - 50) + 'px';
+            floatingNumber.style.top = (event.clientY + Math.random() * 100 - 50) + 'px';
+            
+            document.body.appendChild(floatingNumber);
+            
+            setTimeout(() => {
+                if (document.body.contains(floatingNumber)) {
+                    document.body.removeChild(floatingNumber);
+                }
+            }, 2000);
+        }
+
+        function showAchievement(name) {
+            const achievementDiv = document.createElement('div');
+            achievementDiv.className = 'achievement';
+            achievementDiv.innerHTML = `🏆 ${name}`;
+            
+            recentAchievements.push(achievementDiv);
+            
+            if (recentAchievements.length > maxAchievements) {
+                const oldAchievement = recentAchievements.shift();
+                if (achievementsElement.contains(oldAchievement)) {
+                    oldAchievement.remove();
+                }
+            }
+            
+            achievementsElement.appendChild(achievementDiv);
+            
+            setTimeout(() => {
+                if (achievementsElement.contains(achievementDiv)) {
+                    achievementDiv.remove();
+                    const index = recentAchievements.indexOf(achievementDiv);
+                    if (index > -1) {
+                        recentAchievements.splice(index, 1);
+                    }
+                }
+            }, 8000);
+        }
+
+        function checkAchievements() {
+            achievements.forEach(achievement => {
+                if (!achievement.unlocked && achievement.condition(gameState)) {
+                    achievement.unlocked = true;
+                    showAchievement(achievement.name);
+                }
+            });
+        }
+
+        const upgradeEffects = {
+            upgrade1: () => gameState.clickPower += 1,
+            upgrade2: () => gameState.clickPower += 5,
+            upgrade3: () => gameState.autoKills += 1,
+            upgrade4: () => gameState.autoKills += 10,
+            upgrade5: () => gameState.clickPower += 25,
+            upgrade6: () => gameState.autoKills += 50,
+            upgrade7: () => gameState.clickPower += 100,
+            upgrade8: () => gameState.autoKills += 200,
+            upgrade9: () => gameState.clickPower += 500,
+            upgrade10: () => gameState.autoKills += 1000,
+            upgrade11: () => gameState.clickPower += 2500,
+            upgrade12: () => gameState.autoKills += 5000,
+            upgrade13: () => gameState.clickPower += 10000,
+            upgrade14: () => gameState.autoKills += 25000,
+            upgrade15: () => gameState.clickPower += 50000,
+            upgrade16: () => gameState.autoKills += 100000,
+            upgrade17: () => gameState.clickPower += 250000,
+            upgrade18: () => gameState.autoKills += 500000,
+            upgrade19: () => gameState.clickPower += 1000000,
+            upgrade20: () => gameState.autoKills += 10000000,
+            upgrade21: () => gameState.clickPower += 50000000,
+            upgrade22: () => gameState.autoKills += 100000000,
+            upgrade23: () => gameState.clickPower += 500000000,
+            upgrade24: () => gameState.autoKills += 1000000000,
+            upgrade25: () => gameState.clickPower = gameState.clickPower * 1000,
+            upgrade26: () => gameState.criticalChance += 10,
+            upgrade27: () => gameState.autoKills = gameState.autoKills * 2,
+            upgrade28: () => gameState.criticalChance += 15,
+            upgrade29: () => gameState.autoKills = gameState.autoKills * 3,
+            upgrade30: () => {
+                gameState.clickPower *= 5;
+                gameState.autoKills *= 5;
+                gameState.criticalChance += 20;
+            }
+        };
+
+        Object.keys(upgradeEffects).forEach(upgradeId => {
+            const element = document.getElementById(upgradeId);
+            if (element) {
+                element.addEventListener('click', () => buyUpgrade(upgradeId, upgradeEffects[upgradeId]));
+            }
+        });
+
+        function buyUpgrade(upgradeId, effect) {
+            const upgrade = gameState.upgrades[upgradeId];
+            if (gameState.score >= upgrade.cost) {
+                gameState.score -= upgrade.cost;
+                upgrade.owned++;
+                effect();
+                
+                gameState.criticalChance += 0.5;
+                
+                upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.owned));
+                const costElement = document.getElementById(upgradeId.replace('upgrade', 'cost'));
+                if (costElement) {
+                    costElement.textContent = formatNumber(upgrade.cost);
+                }
+                
+                updateDisplay();
+                showPurchaseEffect(upgradeId);
+            }
+        }
+
+        function showPurchaseEffect(upgradeId) {
+            const upgrade = document.getElementById(upgradeId);
+            upgrade.style.transform = 'scale(1.1)';
+            upgrade.style.boxShadow = '0 0 40px rgba(255, 0, 0, 1)';
+            
+            setTimeout(() => {
+                upgrade.style.transform = '';
+                upgrade.style.boxShadow = '';
+            }, 800);
+        }
+
+        function saveGame() {
+            localStorage.setItem('dexterUltimateSpritesGameState', JSON.stringify(gameState));
+            showAchievement('Game Saved Successfully! 💾');
+        }
+
+        function loadGame() {
+            const savedGame = localStorage.getItem('dexterUltimateSpritesGameState');
+            if (savedGame) {
+                try {
+                    gameState = { ...gameState, ...JSON.parse(savedGame) };
+                    updateDisplay();
+                    showAchievement('Game Loaded Successfully! 📁');
+                } catch (e) {
+                    showAchievement('Load Failed! ❌');
+                }
+            } else {
+                showAchievement('No Save Found! ❌');
+            }
+        }
+
+        setInterval(() => {
+            if (gameState.autoKills > 0) {
+                gameState.score += gameState.autoKills;
+                gameState.totalKills += gameState.autoKills;
+                gameState.bodyParts += gameState.autoKills * 0.1;
+                gameState.darknessLevel = Math.floor(gameState.totalKills / 100) + 1;
+                updateDisplay();
+                checkAchievements();
+            }
+        }, 1000);
+
+        setInterval(() => {
+            checkBossEncounter();
+        }, 3000);
+
+        setInterval(() => {
+            checkHardVictim();
+        }, 2000);
+
+        setInterval(autoSave, 15000);
+
+        window.addEventListener('load', () => {
+            showLoadingScreen();
+            currentVictimElement.textContent = victimNames[Math.floor(Math.random() * victimNames.length)];
+            updateDisplay();
+            
+            const savedGame = localStorage.getItem('dexterUltimateSpritesGameState');
+            if (savedGame) {
+                try {
+                    gameState = { ...gameState, ...JSON.parse(savedGame) };
+                    updateDisplay();
+                } catch (e) {
+                    console.log('Could not load saved game');
+                }
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'X') {
+                gameState.score += 1000000;
+                gameState.clickPower += 10000;
+                gameState.health = gameState.maxHealth;
+                updateDisplay();
+                showAchievement('Ultimate Cheat Activated! 🎮');
+            }
+        });
+    </script>
+</body>
+</html></parameter>
+</invoke>
