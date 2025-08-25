@@ -749,13 +749,351 @@
             background: linear-gradient(135deg, #0a0a0a 0%, #1a0000 50%, #2a0000 100%);
             display: none;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             z-index: 9999;
+            padding: 20px;
         }
 
         .boss-arena.active {
             display: flex;
+        }
+
+        .battle-box {
+            width: 600px;
+            height: 400px;
+            border: 4px solid #ff4444;
+            background: rgba(0, 0, 0, 0.8);
+            position: relative;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .player-soul {
+            width: 20px;
+            height: 20px;
+            background: #ff0000;
+            border: 2px solid #ffff00;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 3px;
+            transition: all 0.1s ease;
+            z-index: 100;
+        }
+
+        .boss-projectile {
+            position: absolute;
+            z-index: 50;
+            animation: projectileGlow 1s ease infinite;
+        }
+
+        @keyframes projectileGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        .trinity-symbol {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #ffff00, #ffaa00, #ffff00);
+            border: 3px solid #ff0000;
+            border-radius: 8px;
+            box-shadow: 
+                0 0 15px rgba(255, 255, 0, 0.8),
+                inset 0 0 10px rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+
+        .trinity-symbol::before {
+            content: '✦';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff0000;
+            font-size: 16px;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 1);
+        }
+
+        .ice-shard {
+            width: 25px;
+            height: 40px;
+            background: linear-gradient(180deg, #ffffff, #88ddff, #00aaff);
+            border: 2px solid #0088ff;
+            border-radius: 0;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            box-shadow: 
+                0 0 20px rgba(0, 170, 255, 0.8),
+                inset 0 0 15px rgba(255, 255, 255, 0.5);
+            position: relative;
+        }
+
+        .ice-shard::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 15px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), transparent);
+            border-radius: 50% 50% 0 0;
+        }
+
+        .fire-ball {
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle at 30% 30%, #ffff00, #ff8800, #ff0000, #aa0000);
+            border: 2px solid #ffaa00;
+            border-radius: 50%;
+            box-shadow: 
+                0 0 25px rgba(255, 0, 0, 1),
+                0 0 40px rgba(255, 100, 0, 0.7),
+                inset 0 0 15px rgba(255, 255, 0, 0.4);
+            position: relative;
+            animation: fireFlicker 0.3s ease infinite alternate;
+        }
+
+        @keyframes fireFlicker {
+            0% { 
+                box-shadow: 
+                    0 0 25px rgba(255, 0, 0, 1),
+                    0 0 40px rgba(255, 100, 0, 0.7),
+                    inset 0 0 15px rgba(255, 255, 0, 0.4);
+            }
+            100% { 
+                box-shadow: 
+                    0 0 35px rgba(255, 50, 0, 1),
+                    0 0 50px rgba(255, 150, 0, 0.9),
+                    inset 0 0 20px rgba(255, 255, 100, 0.6);
+            }
+        }
+
+        .fire-ball::before {
+            content: '🔥';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            animation: fireRotate 1s linear infinite;
+        }
+
+        @keyframes fireRotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg) scale(0.8); }
+            50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.2); }
+            100% { transform: translate(-50%, -50%) rotate(360deg) scale(0.8); }
+        }
+
+        .undertale-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .undertale-btn {
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            background: linear-gradient(45deg, #8b0000, #ff0000);
+            border: 4px solid #ff4444;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            min-width: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .undertale-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .undertale-btn:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 15px 30px rgba(255, 0, 0, 0.8);
+            border-color: #ffff00;
+        }
+
+        .undertale-btn:hover::before {
+            opacity: 1;
+            left: 100%;
+        }
+
+        .undertale-btn:active {
+            transform: scale(0.95);
+        }
+
+        .undertale-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: linear-gradient(45deg, #444444, #666666);
+            border-color: #888888;
+            color: #aaaaaa;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .undertale-btn:disabled::before {
+            display: none;
+        }
+
+        .battle-inventory {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 4px solid #ff4444;
+            border-radius: 20px;
+            padding: 30px;
+            z-index: 10000;
+            min-width: 400px;
+            max-width: 500px;
+            display: none;
+        }
+
+        .battle-inventory.active {
+            display: block;
+            animation: inventoryPopIn 0.5s ease;
+        }
+
+        @keyframes inventoryPopIn {
+            0% { 
+                opacity: 0; 
+                transform: translate(-50%, -50%) scale(0.8); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1); 
+            }
+        }
+
+        .battle-inventory-title {
+            color: #ff4444;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 68, 68, 0.7);
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .battle-inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .battle-inventory-slot {
+            width: 80px;
+            height: 80px;
+            background: rgba(139, 0, 0, 0.3);
+            border: 3px solid #8b0000;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .battle-inventory-slot:hover {
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+            transform: scale(1.1);
+        }
+
+        .battle-inventory-slot.has-item {
+            background: rgba(255, 68, 68, 0.4);
+            border-color: #ff4444;
+        }
+
+        .battle-inventory-item-icon {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .battle-inventory-item-count {
+            font-size: 0.8rem;
+            color: #ffff00;
+            font-weight: bold;
+        }
+
+        .battle-inventory-close {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #8b0000, #ff0000);
+            border: 3px solid #ff4444;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .battle-inventory-close:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
+        }
+
+        .fight-target {
+            width: 100px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid #ff4444;
+            border-radius: 10px;
+            position: relative;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .fight-slider {
+            width: 8px;
+            height: 16px;
+            background: #ffff00;
+            border: 1px solid #ff0000;
+            position: absolute;
+            top: 1px;
+            animation: slideAcross 2s linear infinite;
+        }
+
+        @keyframes slideAcross {
+            0% { left: 0px; }
+            100% { left: calc(100% - 8px); }
+        }
+
+        .fight-target-zone {
+            width: 20px;
+            height: 16px;
+            background: rgba(0, 255, 0, 0.5);
+            border: 1px solid #00ff00;
+            position: absolute;
+            top: 1px;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .boss-container {
@@ -1099,15 +1437,28 @@
         <div class="boss-dialogue" id="bossDialogue">
             A dangerous killer approaches in the shadows...
         </div>
-        
-        <div class="boss-actions">
-            <button class="boss-action-btn" onclick="bossAttack('stab')">🔪 DEADLY STAB</button>
-            <button class="boss-action-btn" onclick="bossAttack('slice')">🗡️ PRECISE SLICE</button>
-            <button class="boss-action-btn" onclick="bossAttack('follow')">👁️ TRACK & FOLLOW</button>
-            <button class="boss-action-btn" onclick="bossAttack('analyze')">🧬 ANALYZE WEAKNESS</button>
-            <button class="boss-action-btn" onclick="bossAttack('ultimate')">💀 ULTIMATE KILL</button>
-            <button class="boss-action-btn" onclick="escapeBoss()">🏃 TACTICAL RETREAT</button>
+
+        <div class="fight-target" id="fightTarget" style="display: none;">
+            <div class="fight-target-zone"></div>
+            <div class="fight-slider" id="fightSlider"></div>
         </div>
+        
+        <div class="battle-box" id="battleBox">
+            <div class="player-soul" id="playerSoul"></div>
+        </div>
+        
+        <div class="undertale-buttons">
+            <button class="undertale-btn" id="fightBtn" onclick="undertaleAction('fight')">⚔️ FIGHT</button>
+            <button class="undertale-btn" id="talkBtn" onclick="undertaleAction('talk')">💬 TALK</button>
+            <button class="undertale-btn" id="itemsBtn" onclick="undertaleAction('items')">🎒 ITEMS</button>
+            <button class="undertale-btn" id="mercyBtn" onclick="undertaleAction('mercy')">🏃 ESCAPE</button>
+        </div>
+    </div>
+
+    <div class="battle-inventory" id="battleInventory">
+        <div class="battle-inventory-title">🎒 BATTLE ITEMS</div>
+        <div class="battle-inventory-grid" id="battleInventoryGrid"></div>
+        <button class="battle-inventory-close" onclick="closeBattleInventory()">✖️ CLOSE</button>
     </div>
 
     <div class="game-layout">
@@ -1426,6 +1777,7 @@
                     "I have been killing longer than you've existed...",
                     "The cycle of death must continue through me..."
                 ],
+                attacks: ['trinity_symbols', 'four_walls', 'divine_rain'],
                 rewards: { score: 25000, clickPower: 400, critChance: 2 }
             },
             iceTruck: {
@@ -1440,21 +1792,8 @@
                     "The ice preserves their beauty forever...",
                     "You cannot escape your true nature..."
                 ],
+                attacks: ['ice_shards', 'frozen_limbs', 'cold_touch'],
                 rewards: { score: 18000, clickPower: 250, critChance: 1.5 }
-            },
-            travis: {
-                name: "Travis Marshall",
-                health: 700,
-                maxHealth: 700,
-                sprite: "travis-sprite",
-                dialogue: [
-                    "The apocalypse is coming through me...",
-                    "I am the vessel of divine retribution...",
-                    "You cannot stop the end of days...",
-                    "My angels will guide me to victory...",
-                    "Religious fervor fuels my blade..."
-                ],
-                rewards: { score: 22000, clickPower: 350, critChance: 1.8 }
             },
             lila: {
                 name: "Lila West",
@@ -1468,11 +1807,17 @@
                     "Fire cleanses everything, including your lies...",
                     "You can't run from what you truly are..."
                 ],
+                attacks: ['fire_balls', 'flame_walls', 'burning_truth'],
                 rewards: { score: 12000, clickPower: 180, critChance: 1 }
             }
         };
 
         let currentBoss = null;
+        let battleState = 'menu';
+        let playerSoulPos = { x: 290, y: 190 };
+        let projectiles = [];
+        let battlePhase = 0;
+        let fightTimingActive = false;
 
         const achievements = [
             { id: 'firstKill', name: 'First Blood 🔪', condition: (state) => state.score >= 1, unlocked: false },
@@ -1903,7 +2248,631 @@
             bossHealth.style.width = '100%';
             bossDialogue.textContent = currentBoss.dialogue[0];
             
-            createBossEffects();
+            battleState = 'menu';
+            playerSoulPos = { x: 290, y: 190 };
+            projectiles = [];
+            battlePhase = 0;
+            
+            updatePlayerSoulPosition();
+            setupBattleControls();
+        }
+
+        function setupBattleControls() {
+            document.addEventListener('keydown', handleBattleInput);
+        }
+
+        function handleBattleInput(e) {
+            if (!document.getElementById('bossArena').classList.contains('active')) return;
+            
+            const speed = 6;
+            
+            switch(e.key.toLowerCase()) {
+                case 'w':
+                case 'arrowup':
+                    if (playerSoulPos.y > 20) playerSoulPos.y -= speed;
+                    break;
+                case 's':
+                case 'arrowdown':
+                    if (playerSoulPos.y < 360) playerSoulPos.y += speed;
+                    break;
+                case 'a':
+                case 'arrowleft':
+                    if (playerSoulPos.x > 20) playerSoulPos.x -= speed;
+                    break;
+                case 'd':
+                case 'arrowright':
+                    if (playerSoulPos.x < 560) playerSoulPos.x += speed;
+                    break;
+                case ' ':
+                    if (fightTimingActive) {
+                        checkFightTiming();
+                    }
+                    break;
+            }
+            
+            playerSoulPos.x = Math.max(20, Math.min(560, playerSoulPos.x));
+            playerSoulPos.y = Math.max(20, Math.min(360, playerSoulPos.y));
+            
+            updatePlayerSoulPosition();
+            e.preventDefault();
+        }
+
+        function updatePlayerSoulPosition() {
+            const playerSoul = document.getElementById('playerSoul');
+            playerSoul.style.left = playerSoulPos.x + 'px';
+            playerSoul.style.top = playerSoulPos.y + 'px';
+        }
+
+        function undertaleAction(action) {
+            if (battleState === 'attacking') return;
+            
+            const bossDialogue = document.getElementById('bossDialogue');
+            
+            disableUndertaleButtons();
+            
+            switch(action) {
+                case 'fight':
+                    startFightSequence();
+                    break;
+                case 'talk':
+                    const randomDialogue = currentBoss.dialogue[Math.floor(Math.random() * currentBoss.dialogue.length)];
+                    bossDialogue.textContent = randomDialogue;
+                    setTimeout(() => {
+                        startBossAttack();
+                    }, 2000);
+                    break;
+                case 'items':
+                    openBattleInventory();
+                    enableUndertaleButtons();
+                    break;
+                case 'mercy':
+                    bossDialogue.textContent = "You attempt to escape the deadly encounter...";
+                    setTimeout(() => {
+                        escapeBoss();
+                    }, 2000);
+                    break;
+            }
+        }
+
+        function disableUndertaleButtons() {
+            document.getElementById('fightBtn').disabled = true;
+            document.getElementById('talkBtn').disabled = true;
+            document.getElementById('itemsBtn').disabled = true;
+            document.getElementById('mercyBtn').disabled = true;
+        }
+
+        function enableUndertaleButtons() {
+            document.getElementById('fightBtn').disabled = false;
+            document.getElementById('talkBtn').disabled = false;
+            document.getElementById('itemsBtn').disabled = false;
+            document.getElementById('mercyBtn').disabled = false;
+        }
+
+        function openBattleInventory() {
+            const battleInventory = document.getElementById('battleInventory');
+            const battleInventoryGrid = document.getElementById('battleInventoryGrid');
+            
+            battleInventoryGrid.innerHTML = '';
+            
+            let slotIndex = 0;
+            Object.keys(gameState.inventory).forEach(itemId => {
+                if (gameState.inventory[itemId] > 0 && slotIndex < 8) {
+                    const item = items[itemId];
+                    
+                    const slot = document.createElement('div');
+                    slot.className = 'battle-inventory-slot has-item';
+                    slot.setAttribute('data-item', itemId);
+                    slot.onclick = () => useBattleItem(itemId);
+                    
+                    slot.innerHTML = `
+                        <div class="battle-inventory-item-icon">${item.icon}</div>
+                        <div class="battle-inventory-item-count">${gameState.inventory[itemId]}</div>
+                    `;
+                    
+                    battleInventoryGrid.appendChild(slot);
+                    slotIndex++;
+                }
+            });
+            
+            while (slotIndex < 8) {
+                const emptySlot = document.createElement('div');
+                emptySlot.className = 'battle-inventory-slot';
+                battleInventoryGrid.appendChild(emptySlot);
+                slotIndex++;
+            }
+            
+            battleInventory.classList.add('active');
+        }
+
+        function closeBattleInventory() {
+            const battleInventory = document.getElementById('battleInventory');
+            battleInventory.classList.remove('active');
+        }
+
+        function useBattleItem(itemId) {
+            if (!gameState.inventory[itemId] || gameState.inventory[itemId] <= 0) return;
+            
+            const item = items[itemId];
+            const bossDialogue = document.getElementById('bossDialogue');
+            
+            switch(itemId) {
+                case 'item1':
+                    gameState.health = Math.min(gameState.maxHealth, gameState.health + 25);
+                    bossDialogue.textContent = '🩹 Used bandage in battle! +25 Health!';
+                    break;
+                case 'item4':
+                    gameState.adrenalineBoost = 0.5;
+                    gameState.adrenalineEnd = Date.now() + 60000;
+                    bossDialogue.textContent = '💉 Adrenaline coursing through your veins! +50% power!';
+                    break;
+                case 'item7':
+                    gameState.health = gameState.maxHealth;
+                    gameState.maxHealth += 25;
+                    bossDialogue.textContent = '🏥 First aid in the heat of battle! Full recovery!';
+                    break;
+                default:
+                    bossDialogue.textContent = `You used ${item.name} but nothing happened in battle...`;
+                    break;
+            }
+
+            if (item.type === 'consumable') {
+                gameState.inventory[itemId]--;
+                if (gameState.inventory[itemId] <= 0) {
+                    delete gameState.inventory[itemId];
+                }
+            }
+            
+            updateDisplay();
+            updateInventoryDisplay();
+            closeBattleInventory();
+            
+            setTimeout(() => {
+                startBossAttack();
+            }, 2000);
+        }
+
+        function startFightSequence() {
+            const fightTarget = document.getElementById('fightTarget');
+            const bossDialogue = document.getElementById('bossDialogue');
+            
+            fightTarget.style.display = 'block';
+            fightTimingActive = true;
+            bossDialogue.textContent = "Press SPACE when the slider hits the green zone!";
+            
+            setTimeout(() => {
+                if (fightTimingActive) {
+                    fightTimingActive = false;
+                    fightTarget.style.display = 'none';
+                    bossDialogue.textContent = "You missed the timing!";
+                    setTimeout(startBossAttack, 1500);
+                }
+            }, 3000);
+        }
+
+        function checkFightTiming() {
+            const slider = document.getElementById('fightSlider');
+            const sliderRect = slider.getBoundingClientRect();
+            const targetZone = document.querySelector('.fight-target-zone');
+            const targetRect = targetZone.getBoundingClientRect();
+            
+            const sliderCenter = sliderRect.left + sliderRect.width / 2;
+            const targetCenter = targetRect.left + targetRect.width / 2;
+            const distance = Math.abs(sliderCenter - targetCenter);
+            
+            fightTimingActive = false;
+            document.getElementById('fightTarget').style.display = 'none';
+            
+            let damage = 0;
+            const bossDialogue = document.getElementById('bossDialogue');
+            
+            if (distance < 15) {
+                damage = getCurrentClickPower() * 4;
+                bossDialogue.textContent = "PERFECT HIT! Critical damage dealt!";
+                createBossEffects();
+            } else if (distance < 30) {
+                damage = getCurrentClickPower() * 2.5;
+                bossDialogue.textContent = "Good hit! Solid damage!";
+            } else {
+                damage = getCurrentClickPower() * 1;
+                bossDialogue.textContent = "You barely grazed them...";
+            }
+            
+            currentBoss.health -= damage;
+            
+            const bossHealth = document.getElementById('bossHealth');
+            const healthPercent = Math.max(0, (currentBoss.health / currentBoss.maxHealth) * 100);
+            bossHealth.style.width = healthPercent + '%';
+            
+            if (currentBoss.health <= 0) {
+                setTimeout(defeatedBoss, 2000);
+            } else {
+                setTimeout(startBossAttack, 2000);
+            }
+        }
+
+        function startBossAttack() {
+            const battleBox = document.getElementById('battleBox');
+            const attackType = currentBoss.attacks[Math.floor(Math.random() * currentBoss.attacks.length)];
+            
+            battleState = 'attacking';
+            projectiles = [];
+            battlePhase++;
+            
+            switch(attackType) {
+                case 'trinity_symbols':
+                    createTrinityAttack();
+                    break;
+                case 'four_walls':
+                    createWallAttack();
+                    break;
+                case 'divine_rain':
+                    createRainAttack();
+                    break;
+                case 'ice_shards':
+                    createIceAttack();
+                    break;
+                case 'frozen_limbs':
+                    createFrozenAttack();
+                    break;
+                case 'cold_touch':
+                    createColdAttack();
+                    break;
+                case 'fire_balls':
+                    createFireAttack();
+                    break;
+                case 'flame_walls':
+                    createFlameWallAttack();
+                    break;
+                case 'burning_truth':
+                    createBurningAttack();
+                    break;
+            }
+            
+            startProjectilePhase();
+        }
+
+        function createTrinityAttack() {
+            const battleBox = document.getElementById('battleBox');
+            const bossDialogue = document.getElementById('bossDialogue');
+            bossDialogue.textContent = "Divine symbols rain from the heavens!";
+            
+            for (let wave = 0; wave < 3; wave++) {
+                setTimeout(() => {
+                    for (let i = 0; i < 6; i++) {
+                        setTimeout(() => {
+                            const projectile = document.createElement('div');
+                            projectile.className = 'boss-projectile trinity-symbol';
+                            projectile.style.left = (i * 100 + 50 + Math.random() * 50) + 'px';
+                            projectile.style.top = '-40px';
+                            battleBox.appendChild(projectile);
+                            
+                            projectiles.push({
+                                element: projectile,
+                                x: parseFloat(projectile.style.left),
+                                y: -40,
+                                vx: (Math.random() - 0.5) * 3,
+                                vy: 4 + Math.random() * 3,
+                                rotation: 0,
+                                rotationSpeed: 5
+                            });
+                        }, i * 100);
+                    }
+                }, wave * 800);
+            }
+        }
+
+        function createIceAttack() {
+            const battleBox = document.getElementById('battleBox');
+            const bossDialogue = document.getElementById('bossDialogue');
+            bossDialogue.textContent = "Frozen blades pierce through the air!";
+            
+            for (let side = 0; side < 2; side++) {
+                for (let i = 0; i < 8; i++) {
+                    setTimeout(() => {
+                        const projectile = document.createElement('div');
+                        projectile.className = 'boss-projectile ice-shard';
+                        
+                        if (side === 0) {
+                            projectile.style.left = '-50px';
+                            projectile.style.top = (i * 50 + 20) + 'px';
+                        } else {
+                            projectile.style.left = '650px';
+                            projectile.style.top = (i * 50 + 20) + 'px';
+                        }
+                        
+                        battleBox.appendChild(projectile);
+                        
+                        const targetX = playerSoulPos.x;
+                        const targetY = playerSoulPos.y;
+                        const startX = side === 0 ? -50 : 650;
+                        const startY = parseFloat(projectile.style.top);
+                        
+                        const angle = Math.atan2(targetY - startY, targetX - startX);
+                        const speed = 5;
+                        
+                        projectiles.push({
+                            element: projectile,
+                            x: startX,
+                            y: startY,
+                            vx: Math.cos(angle) * speed,
+                            vy: Math.sin(angle) * speed,
+                            trail: []
+                        });
+                    }, i * 150 + side * 75);
+                }
+            }
+        }
+
+        function createFireAttack() {
+            const battleBox = document.getElementById('battleBox');
+            const bossDialogue = document.getElementById('bossDialogue');
+            bossDialogue.textContent = "Infernal flames seek your soul!";
+            
+            const centerX = 300;
+            const centerY = 200;
+            const radius = 150;
+            
+            for (let i = 0; i < 12; i++) {
+                setTimeout(() => {
+                    const projectile = document.createElement('div');
+                    projectile.className = 'boss-projectile fire-ball';
+                    
+                    const angle = (i / 12) * Math.PI * 2;
+                    const startX = centerX + Math.cos(angle) * radius;
+                    const startY = centerY + Math.sin(angle) * radius;
+                    
+                    projectile.style.left = startX + 'px';
+                    projectile.style.top = startY + 'px';
+                    battleBox.appendChild(projectile);
+                    
+                    const speed = 3 + Math.random() * 2;
+                    
+                    projectiles.push({
+                        element: projectile,
+                        x: startX,
+                        y: startY,
+                        vx: Math.cos(angle) * -speed,
+                        vy: Math.sin(angle) * -speed,
+                        orbiting: true,
+                        orbitAngle: angle,
+                        orbitSpeed: 0.05
+                    });
+                }, i * 200);
+            }
+            
+            setTimeout(() => {
+                for (let j = 0; j < 8; j++) {
+                    setTimeout(() => {
+                        const chasingBall = document.createElement('div');
+                        chasingBall.className = 'boss-projectile fire-ball';
+                        chasingBall.style.left = Math.random() * 600 + 'px';
+                        chasingBall.style.top = '-50px';
+                        battleBox.appendChild(chasingBall);
+                        
+                        projectiles.push({
+                            element: chasingBall,
+                            x: parseFloat(chasingBall.style.left),
+                            y: -50,
+                            vx: 0,
+                            vy: 0,
+                            chasing: true,
+                            speed: 2.5
+                        });
+                    }, j * 300);
+                }
+            }, 2000);
+        }
+
+        function createWallAttack() {
+            const battleBox = document.getElementById('battleBox');
+            const bossDialogue = document.getElementById('bossDialogue');
+            bossDialogue.textContent = "Four walls converge to entomb you!";
+            
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const wall = document.createElement('div');
+                    wall.className = 'boss-projectile trinity-symbol';
+                    wall.style.width = '15px';
+                    wall.style.height = '400px';
+                    
+                    if (i < 4) {
+                        wall.style.left = (i * 150 - 50) + 'px';
+                        wall.style.top = '0px';
+                    } else {
+                        wall.style.left = ((i - 4) * 150 + 650) + 'px';
+                        wall.style.top = '0px';
+                    }
+                    
+                    battleBox.appendChild(wall);
+                    
+                    const speed = 3;
+                    
+                    projectiles.push({
+                        element: wall,
+                        x: parseFloat(wall.style.left),
+                        y: 0,
+                        vx: i < 4 ? speed : -speed,
+                        vy: 0,
+                        isWall: true
+                    });
+                }, i * 200);
+            }
+        }
+
+        function createRainAttack() {
+            const battleBox = document.getElementById('battleBox');
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const projectile = document.createElement('div');
+                    projectile.className = 'boss-projectile trinity-symbol';
+                    projectile.style.left = Math.random() * 560 + 'px';
+                    projectile.style.top = '-40px';
+                    battleBox.appendChild(projectile);
+                    
+                    projectiles.push({
+                        element: projectile,
+                        x: parseFloat(projectile.style.left),
+                        y: -40,
+                        vx: 0,
+                        vy: 5
+                    });
+                }, i * 150);
+            }
+        }
+
+        function createFrozenAttack() {
+            createIceAttack();
+        }
+
+        function createColdAttack() {
+            const battleBox = document.getElementById('battleBox');
+            for (let i = 0; i < 12; i++) {
+                const projectile = document.createElement('div');
+                projectile.className = 'boss-projectile ice-shard';
+                const angle = (i / 12) * Math.PI * 2;
+                const radius = 200;
+                const centerX = 300;
+                const centerY = 200;
+                
+                projectile.style.left = (centerX + Math.cos(angle) * radius) + 'px';
+                projectile.style.top = (centerY + Math.sin(angle) * radius) + 'px';
+                battleBox.appendChild(projectile);
+                
+                projectiles.push({
+                    element: projectile,
+                    x: centerX + Math.cos(angle) * radius,
+                    y: centerY + Math.sin(angle) * radius,
+                    vx: Math.cos(angle) * -2,
+                    vy: Math.sin(angle) * -2
+                });
+            }
+        }
+
+        function createFlameWallAttack() {
+            createFireAttack();
+        }
+
+        function createBurningAttack() {
+            createFireAttack();
+        }
+
+        function startProjectilePhase() {
+            const projectileInterval = setInterval(() => {
+                updateProjectiles();
+                checkCollisions();
+                
+                if (projectiles.length === 0) {
+                    clearInterval(projectileInterval);
+                    setTimeout(() => {
+                        battleState = 'menu';
+                        enableUndertaleButtons();
+                        document.getElementById('bossDialogue').textContent = "Your turn! Choose your action!";
+                    }, 1000);
+                }
+            }, 50);
+            
+            setTimeout(() => {
+                clearInterval(projectileInterval);
+                projectiles.forEach(proj => {
+                    if (proj.element && proj.element.parentNode) {
+                        proj.element.remove();
+                    }
+                });
+                projectiles = [];
+                if (battleState !== 'menu') {
+                    battleState = 'menu';
+                    enableUndertaleButtons();
+                    document.getElementById('bossDialogue').textContent = "Your turn! Choose your action!";
+                }
+            }, 5000);
+        }
+
+        function updateProjectiles() {
+            projectiles = projectiles.filter(proj => {
+                if (!proj.element || !proj.element.parentNode) return false;
+                
+                if (proj.chasing) {
+                    const dx = playerSoulPos.x - proj.x;
+                    const dy = playerSoulPos.y - proj.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance > 0) {
+                        proj.vx = (dx / distance) * proj.speed;
+                        proj.vy = (dy / distance) * proj.speed;
+                    }
+                }
+                
+                if (proj.orbiting) {
+                    proj.orbitAngle += proj.orbitSpeed;
+                    const centerX = 300;
+                    const centerY = 200;
+                    const radius = 100;
+                    proj.x = centerX + Math.cos(proj.orbitAngle) * radius;
+                    proj.y = centerY + Math.sin(proj.orbitAngle) * radius;
+                } else {
+                    proj.x += proj.vx;
+                    proj.y += proj.vy;
+                }
+                
+                if (proj.rotation !== undefined) {
+                    proj.rotation += proj.rotationSpeed;
+                    proj.element.style.transform = `rotate(${proj.rotation}deg)`;
+                }
+                
+                proj.element.style.left = proj.x + 'px';
+                proj.element.style.top = proj.y + 'px';
+                
+                if (proj.x < -100 || proj.x > 700 || proj.y < -100 || proj.y > 500) {
+                    proj.element.remove();
+                    return false;
+                }
+                
+                return true;
+            });
+        }
+
+        function checkCollisions() {
+            if (battleState === 'victory') return;
+            
+            const soulRect = {
+                x: playerSoulPos.x,
+                y: playerSoulPos.y,
+                width: 20,
+                height: 20
+            };
+            
+            projectiles.forEach(proj => {
+                const projRect = {
+                    x: proj.x,
+                    y: proj.y,
+                    width: proj.element.offsetWidth,
+                    height: proj.element.offsetHeight
+                };
+                
+                if (soulRect.x < projRect.x + projRect.width &&
+                    soulRect.x + soulRect.width > projRect.x &&
+                    soulRect.y < projRect.y + projRect.height &&
+                    soulRect.y + soulRect.height > projRect.y) {
+                    
+                    gameState.health -= 15;
+                    updateHealthDisplay();
+                    
+                    const playerSoul = document.getElementById('playerSoul');
+                    playerSoul.style.background = '#ffffff';
+                    setTimeout(() => {
+                        playerSoul.style.background = '#ff0000';
+                    }, 200);
+                    
+                    proj.element.remove();
+                    const index = projectiles.indexOf(proj);
+                    if (index > -1) projectiles.splice(index, 1);
+                }
+            });
+        }
+
+        function declineBossFight() {
+            bossAlertsElement.innerHTML = '';
+            currentBoss = null;
         }
 
         function createBossEffects() {
@@ -1924,67 +2893,23 @@
             }
         }
 
-        function declineBossFight() {
-            bossAlertsElement.innerHTML = '';
-            currentBoss = null;
-        }
-
-        function bossAttack(attackType) {
-            if (!currentBoss) return;
-            
-            let damage = 0;
-            const bossDialogue = document.getElementById('bossDialogue');
-            
-            switch (attackType) {
-                case 'stab':
-                    damage = getCurrentClickPower() * 2.2;
-                    bossDialogue.textContent = "Your blade pierces through their defenses!";
-                    createBossEffects();
-                    break;
-                case 'slice':
-                    damage = getCurrentClickPower() * 1.8;
-                    bossDialogue.textContent = "A masterful slice across their weakness!";
-                    break;
-                case 'follow':
-                    damage = getCurrentClickPower() * 3.5;
-                    bossDialogue.textContent = "You tracked them to their fatal flaw!";
-                    break;
-                case 'analyze':
-                    damage = getCurrentClickPower() * 2.8;
-                    bossDialogue.textContent = "Analysis reveals their critical vulnerability!";
-                    break;
-                case 'ultimate':
-                    damage = getCurrentClickPower() * 5;
-                    bossDialogue.textContent = "ULTIMATE KILL! Maximum damage dealt!";
-                    createBossEffects();
-                    createBossEffects();
-                    break;
-            }
-            
-            currentBoss.health -= damage;
-            
-            const bossHealth = document.getElementById('bossHealth');
-            const healthPercent = Math.max(0, (currentBoss.health / currentBoss.maxHealth) * 100);
-            bossHealth.style.width = healthPercent + '%';
-            
-            if (currentBoss.health <= 0) {
-                defeatedBoss();
-            } else {
-                setTimeout(() => {
-                    const randomDialogue = currentBoss.dialogue[Math.floor(Math.random() * currentBoss.dialogue.length)];
-                    bossDialogue.textContent = randomDialogue;
-                }, 1200);
-            }
-        }
-
         function defeatedBoss() {
             const bossArena = document.getElementById('bossArena');
+            
+            battleState = 'victory';
+            
+            projectiles.forEach(proj => {
+                if (proj.element && proj.element.parentNode) {
+                    proj.element.remove();
+                }
+            });
+            projectiles = [];
             
             gameState.score += currentBoss.rewards.score;
             gameState.clickPower += currentBoss.rewards.clickPower;
             gameState.criticalChance += currentBoss.rewards.critChance;
             gameState.bossKills++;
-            gameState.health = Math.min(gameState.maxHealth, gameState.health + 25);
+            gameState.health = Math.min(gameState.maxHealth, gameState.health + 50);
             
             showAchievement(`🎉 Defeated ${currentBoss.name}! 👑 Massive power boost!`);
             
@@ -1992,18 +2917,31 @@
             createBossEffects();
             createBossEffects();
             
-            bossArena.classList.remove('active');
-            currentBoss = null;
-            
-            updateDisplay();
-            checkAchievements();
+            setTimeout(() => {
+                document.removeEventListener('keydown', handleBattleInput);
+                bossArena.classList.remove('active');
+                currentBoss = null;
+                battleState = 'menu';
+                updateDisplay();
+                checkAchievements();
+            }, 3000);
         }
 
         function escapeBoss() {
             const bossArena = document.getElementById('bossArena');
             
+            projectiles.forEach(proj => {
+                if (proj.element && proj.element.parentNode) {
+                    proj.element.remove();
+                }
+            });
+            projectiles = [];
+            
+            document.removeEventListener('keydown', handleBattleInput);
+            
             bossArena.classList.remove('active');
             currentBoss = null;
+            battleState = 'menu';
             
             showAchievement('You escaped into the shadows... this time. 🏃');
         }
